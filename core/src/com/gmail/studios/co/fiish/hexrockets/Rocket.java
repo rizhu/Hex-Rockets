@@ -35,6 +35,11 @@ public class Rocket extends Actor { //Rocket fin starts at 21 pixels from bottom
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 if (mAnswerState == AnswerState.Correct) {
                     newProblem();
+                    return true;
+                }
+                if (mAnswerState == AnswerState.Incorrect) {
+                    gameOver();
+                    return true;
                 }
                 return true;
             }
@@ -78,8 +83,8 @@ public class Rocket extends Actor { //Rocket fin starts at 21 pixels from bottom
         mAnswerState = state;
     }
 
-    public void newProblem() {
+    public void newProblem() { }
 
-    }
+    public void gameOver() { }
 
 }

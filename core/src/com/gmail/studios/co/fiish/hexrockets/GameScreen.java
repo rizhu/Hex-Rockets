@@ -9,9 +9,12 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -36,13 +39,54 @@ public class GameScreen extends ScreenAdapter {
     public GameScreen(TextureAtlas atlas) {
         mViewport = new ScreenViewport();
 
+        mStage = new Stage(mViewport);
+
         mRockets = new Array<Rocket>(4);
         mAliens = new Array<Alien>(4);
+
         for (int i = 0; i < 4; ++i) {
             mRockets.add(new Rocket(mViewport, atlas, i) {
                 @Override
                 public void newProblem() {
-                    setUpProblem(255);
+                    for (int i = 0; i < 4; i++) {
+                        /*mAliens.get(i).clearActions();
+                        mAliens.get(i).addAction(Actions.sequence(Actions.moveTo(mAliens.get(i).mInitialX, 0, 0.15f),
+                                Actions.run(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        setUpProblem(255);
+                                    }
+                                }),
+                                Actions.moveTo(mAliens.get(i).getX(),
+                                        mRockets.get(i).getY() + mRockets.get(i).getHeight() * (20f / 52f) - mAliens.get(i).getHeight(), 15)));*/
+                        setUpProblem(15);
+                        resetAlienPosition(4);
+                    }
+                }
+
+                @Override
+                public void gameOver() {
+                    for (int i = 0; i < 4; i++) {
+                        mAliens.get(i).reset();
+                        mStage.addAction(Actions.sequence(Actions.run(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        for (int i = 0; i < 4; ++i) {
+                                            mRockets.get(i).setTouchable(Touchable.disabled);
+                                        }
+                                    }
+                                }),
+                                Actions.delay(2, Actions.run(new Runnable() {
+                            @Override
+                            public void run() {
+                                setUpProblem(15);
+                                for (int i = 0; i < 4; ++i) {
+                                    mRockets.get(i).setTouchable(Touchable.enabled);
+                                }
+                                sendAliensForward(4);
+                            }
+                        }))));
+                    }
                 }
             });
 
@@ -57,8 +101,6 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void show() {
-        mStage = new Stage(mViewport);
-
         mGenerator = new FreeTypeFontGenerator(Gdx.files.internal("font.ttf"));
         mProblemParam = new FreeTypeFontGenerator.FreeTypeFontParameter();
         mAnswerParam = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -67,7 +109,7 @@ public class GameScreen extends ScreenAdapter {
         Gdx.gl.glClearColor(0, 0, 0, 1);
 
         Gdx.input.setInputProcessor(mStage);
-        setUpProblem(255);
+        setUpProblem(15);
     }
 
     @Override
@@ -88,6 +130,8 @@ public class GameScreen extends ScreenAdapter {
         mAnswerParam.size = (int) (0.05f * mViewport.getScreenHeight());
         mAnswerParam.color = Color.WHITE;
         mAnswerFont = mGenerator.generateFont(mAnswerParam);
+
+        sendAliensForward(4);
     }
 
     @Override
@@ -95,10 +139,6 @@ public class GameScreen extends ScreenAdapter {
         mViewport.apply(true);
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-
-        mStage.act(delta);
-        mStage.draw();
-
 
         mBatch.begin();
         mLayout.setText(mProblemFont, mProblem.toString());
@@ -112,6 +152,8 @@ public class GameScreen extends ScreenAdapter {
         }
 
         mBatch.end();
+        mStage.act(delta);
+        mStage.draw();
     }
 
     @Override
@@ -121,11 +163,14 @@ public class GameScreen extends ScreenAdapter {
         mGenerator.dispose();
     }
 
-    public void setUpProblem(int bound) {
+    private void setUpProblem(int bound) {
         mProblem.generateProblem(bound);
+
         Gdx.app.log("Problem", mProblem.toString());
         Gdx.app.log("Solution", "" + Integer.toHexString(mProblem.getSolution()));
+
         mAnswerSet.generateAnswers(mProblem.getSolution(), bound, 32);
+
         for (int i = 0; i < 4; ++i) {
             Gdx.app.log("" + i, "" + Integer.toHexString(mAnswerSet.getAnswerSet().get(i)));
             if (i == mAnswerSet.getAnswerIndex()) {
@@ -134,6 +179,29 @@ public class GameScreen extends ScreenAdapter {
                 mRockets.get(i).setAnswerState(AnswerState.Incorrect);
             }
             Gdx.app.log("" + i, "" + mRockets.get(i).getAnswerState());
+        }
+    }
+
+    private void resetAlienPosition(float nextDuration) {
+        for (int i = 0; i < 4; i++) {
+            mAliens.get(i).clearActions();
+            mAliens.get(i).addAction(Actions.sequence(Actions.moveTo(mAliens.get(i).mInitialX, 0, 0.15f),
+                    Actions.moveTo(mAliens.get(i).getX(),
+                            mRockets.get(i).getY() + mRockets.get(i).getHeight() * (20f / 52f) - mAliens.get(i).getHeight(), nextDuration)));
+        }
+    }
+
+    private void moveAliensBack() {
+        for (int i = 0; i < 4; i++) {
+            mAliens.get(i).clearActions();
+            mAliens.get(i).addAction(Actions.moveTo(mAliens.get(i).mInitialX, 0, 0.15f));
+        }
+    }
+
+    private void sendAliensForward(float duration) {
+        for (int i = 0; i < 4; i++) {
+            mAliens.get(i).addAction(Actions.moveTo(mAliens.get(i).getX(),
+                            mRockets.get(i).getY() + mRockets.get(i).getHeight() * (20f / 52f) - mAliens.get(i).getHeight(), duration));
         }
     }
 }

@@ -5,9 +5,12 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class Alien extends Actor {
+    public float mInitialX = -1f;
+
     private Viewport mViewport;
     private Animation<TextureRegion> mAnimation;
 
@@ -37,14 +40,21 @@ public class Alien extends Actor {
         this.setX((2 * mID + 1) * mViewport.getScreenWidth() / 8f - getWidth() / 2f);
         this.setY(0);
 
+        mInitialX = (2 * mID + 1) * mViewport.getScreenWidth() / 8f - getWidth() / 2f;
+
         mElapsedTime = 0f;
     }
 
     public void reset() {
         this.clearActions();
 
-        this.setX((2 * mID + 1) * mViewport.getScreenWidth() / 8f - getWidth() / 2f);
-        this.setY(0);
+        this.addAction(Actions.delay(2, Actions.run(new Runnable() {
+            @Override
+            public void run() {
+                setX((2 * mID + 1) * mViewport.getScreenWidth() / 8f - getWidth() / 2f);
+                setY(0);
+            }
+        })));
     }
 
     @Override

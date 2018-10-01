@@ -24,7 +24,7 @@ allprojects {
     version = '1.0'
     ext {
         appName = "Hex Rockets"
-        gdxVersion = '1.9.8'
+        gdxVersion = '1.9.9-SNAPSHOT'
         roboVMVersion = '2.3.3'
         box2DLightsVersion = '1.4'
         ashleyVersion = '1.7.0'
