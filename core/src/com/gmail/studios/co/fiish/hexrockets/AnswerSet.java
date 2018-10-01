@@ -9,10 +9,7 @@ public class AnswerSet {
     private Array<Integer> mAnswerList;
 
     private int mAnswerIndex = -1;
-    private int mTempAnswer = -1;
     private int mLower, mUpper;
-
-    private boolean mEligibleAnswer = false;
 
     public AnswerSet() {
         mSet = new Array<Integer>(4);

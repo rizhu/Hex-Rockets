@@ -9,12 +9,11 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -68,7 +67,7 @@ public class GameScreen extends ScreenAdapter {
                 public void gameOver() {
                     for (int i = 0; i < 4; i++) {
                         mAliens.get(i).reset();
-                        mStage.addAction(Actions.sequence(Actions.run(new Runnable() {
+                        mStage.addAction(sequence(run(new Runnable() {
                                     @Override
                                     public void run() {
                                         for (int i = 0; i < 4; ++i) {
@@ -76,7 +75,7 @@ public class GameScreen extends ScreenAdapter {
                                         }
                                     }
                                 }),
-                                Actions.delay(2, Actions.run(new Runnable() {
+                                delay(2, run(new Runnable() {
                             @Override
                             public void run() {
                                 setUpProblem(15);
@@ -185,8 +184,8 @@ public class GameScreen extends ScreenAdapter {
     private void resetAlienPosition(float nextDuration) {
         for (int i = 0; i < 4; i++) {
             mAliens.get(i).clearActions();
-            mAliens.get(i).addAction(Actions.sequence(Actions.moveTo(mAliens.get(i).mInitialX, 0, 0.15f),
-                    Actions.moveTo(mAliens.get(i).getX(),
+            mAliens.get(i).addAction(sequence(moveTo(mAliens.get(i).mInitialX, 0, 0.15f),
+                    moveTo(mAliens.get(i).getX(),
                             mRockets.get(i).getY() + mRockets.get(i).getHeight() * (20f / 52f) - mAliens.get(i).getHeight(), nextDuration)));
         }
     }
@@ -194,13 +193,13 @@ public class GameScreen extends ScreenAdapter {
     private void moveAliensBack() {
         for (int i = 0; i < 4; i++) {
             mAliens.get(i).clearActions();
-            mAliens.get(i).addAction(Actions.moveTo(mAliens.get(i).mInitialX, 0, 0.15f));
+            mAliens.get(i).addAction(moveTo(mAliens.get(i).mInitialX, 0, 0.15f));
         }
     }
 
     private void sendAliensForward(float duration) {
         for (int i = 0; i < 4; i++) {
-            mAliens.get(i).addAction(Actions.moveTo(mAliens.get(i).getX(),
+            mAliens.get(i).addAction(moveTo(mAliens.get(i).getX(),
                             mRockets.get(i).getY() + mRockets.get(i).getHeight() * (20f / 52f) - mAliens.get(i).getHeight(), duration));
         }
     }

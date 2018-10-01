@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class Alien extends Actor {
@@ -48,7 +48,7 @@ public class Alien extends Actor {
     public void reset() {
         this.clearActions();
 
-        this.addAction(Actions.delay(2, Actions.run(new Runnable() {
+        this.addAction(delay(2, run(new Runnable() {
             @Override
             public void run() {
                 setX((2 * mID + 1) * mViewport.getScreenWidth() / 8f - getWidth() / 2f);
