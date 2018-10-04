@@ -31,9 +31,11 @@ public class GameScreen extends ScreenAdapter {
     private AnswerSet mAnswerSet;
 
     private FreeTypeFontGenerator mGenerator;
-    private FreeTypeFontGenerator.FreeTypeFontParameter mProblemParam, mAnswerParam;
-    private BitmapFont mProblemFont, mAnswerFont;
+    private FreeTypeFontGenerator.FreeTypeFontParameter mProblemParam, mAnswerParam, mScoreParam;
+    private BitmapFont mProblemFont, mAnswerFont, mScoreFont;
     private GlyphLayout mLayout;
+
+    private int mScore = -1;
 
     public GameScreen(TextureAtlas atlas) {
         mViewport = new ScreenViewport();
@@ -47,17 +49,8 @@ public class GameScreen extends ScreenAdapter {
             mRockets.add(new Rocket(mViewport, atlas, i) {
                 @Override
                 public void newProblem() {
+                    ++mScore;
                     for (int i = 0; i < 4; i++) {
-                        /*mAliens.get(i).clearActions();
-                        mAliens.get(i).addAction(Actions.sequence(Actions.moveTo(mAliens.get(i).mInitialX, 0, 0.15f),
-                                Actions.run(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        setUpProblem(255);
-                                    }
-                                }),
-                                Actions.moveTo(mAliens.get(i).getX(),
-                                        mRockets.get(i).getY() + mRockets.get(i).getHeight() * (20f / 52f) - mAliens.get(i).getHeight(), 15)));*/
                         setUpProblem(15);
                         resetAlienPosition(4);
                     }
@@ -65,27 +58,7 @@ public class GameScreen extends ScreenAdapter {
 
                 @Override
                 public void gameOver() {
-                    for (int i = 0; i < 4; i++) {
-                        mAliens.get(i).reset();
-                        mStage.addAction(sequence(run(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        for (int i = 0; i < 4; ++i) {
-                                            mRockets.get(i).setTouchable(Touchable.disabled);
-                                        }
-                                    }
-                                }),
-                                delay(2, run(new Runnable() {
-                            @Override
-                            public void run() {
-                                setUpProblem(15);
-                                for (int i = 0; i < 4; ++i) {
-                                    mRockets.get(i).setTouchable(Touchable.enabled);
-                                }
-                                sendAliensForward(4);
-                            }
-                        }))));
-                    }
+                    resetGameSequence();
                 }
             });
 
@@ -96,6 +69,7 @@ public class GameScreen extends ScreenAdapter {
         mAnswerSet = new AnswerSet();
 
         mBatch = new SpriteBatch();
+        FreeTypeFontGenerator.setMaxTextureSize(4096);
     }
 
     @Override
@@ -103,6 +77,7 @@ public class GameScreen extends ScreenAdapter {
         mGenerator = new FreeTypeFontGenerator(Gdx.files.internal("font.ttf"));
         mProblemParam = new FreeTypeFontGenerator.FreeTypeFontParameter();
         mAnswerParam = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        mScoreParam = new FreeTypeFontGenerator.FreeTypeFontParameter();
         mLayout = new GlyphLayout();
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -122,15 +97,20 @@ public class GameScreen extends ScreenAdapter {
             mStage.addActor(mAliens.get(i));
         }
 
-        mProblemParam.size = (int) (0.065f * mViewport.getScreenHeight());
+        mProblemParam.size = (int) (0.075f * mViewport.getScreenHeight());
         mProblemParam.color = Color.WHITE;
         mProblemFont = mGenerator.generateFont(mProblemParam);
 
-        mAnswerParam.size = (int) (0.05f * mViewport.getScreenHeight());
+        mAnswerParam.size = (int) (0.06f * mViewport.getScreenHeight());
         mAnswerParam.color = Color.WHITE;
         mAnswerFont = mGenerator.generateFont(mAnswerParam);
 
+        mScoreParam.size = (int) (0.04f * mViewport.getScreenHeight());
+        mScoreParam.color = new Color(0.224f, 1f, .078f, 1);
+        mScoreFont = mGenerator.generateFont(mScoreParam);
+
         sendAliensForward(4);
+        mScore = 0;
     }
 
     @Override
@@ -147,8 +127,11 @@ public class GameScreen extends ScreenAdapter {
             mLayout.setText(mAnswerFont, Integer.toHexString(mAnswerSet.getAnswerSet().get(i)).toUpperCase());
             mAnswerFont.draw(mBatch, mLayout,
                     (2 * i + 1f) * mViewport.getScreenWidth() / 8f - mLayout.width / 2f,
-                    mRockets.get(i).getY() + 1.05f * mRockets.get(i).getHeight() + mLayout.height);
+                    mRockets.get(i).getY() + 1.075f * mRockets.get(i).getHeight() + mLayout.height);
         }
+
+        mLayout.setText(mScoreFont, "Streak: " + mScore);
+        mScoreFont.draw(mBatch, mLayout, mViewport.getScreenWidth() / 2f - mLayout.width / 2f, mViewport.getScreenHeight() * 0.26f);
 
         mBatch.end();
         mStage.act(delta);
@@ -160,6 +143,15 @@ public class GameScreen extends ScreenAdapter {
         mBatch.dispose();
         mProblemFont.dispose();
         mGenerator.dispose();
+    }
+
+    private void checkAlienPos() {
+        if (mAliens.get(0).getY() == mRockets.get(0).getY() + mRockets.get(0).getHeight() * (20f / 52f) - mAliens.get(0).getHeight()) {
+            for (int i = 0; i < 4; ++i) {
+                mAliens.get(i).clearActions();
+                mRockets.get(i).addAction(fadeOut(1f));
+            }
+        }
     }
 
     private void setUpProblem(int bound) {
@@ -190,6 +182,26 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
+    private void resetGameSequence() {
+        mScore = 0;
+        for (int i = 0; i < 4; ++i) {
+            mRockets.get(i).setTouchable(Touchable.disabled);
+            mAliens.get(i).clearActions();
+            mRockets.get(i).addAction(fadeOut(0.25f));
+        }
+        mStage.addAction(delay(2.0f, run(new Runnable() {
+            @Override
+            public void run() {
+                setUpProblem(15);
+                for (int i = 0; i < 4; ++i) {
+                    mRockets.get(i).addAction(fadeIn(0.25f));
+                    mRockets.get(i).setTouchable(Touchable.enabled);
+                }
+                resetAlienPosition(4);
+            }
+        })));
+    }
+
     private void moveAliensBack() {
         for (int i = 0; i < 4; i++) {
             mAliens.get(i).clearActions();
@@ -200,7 +212,7 @@ public class GameScreen extends ScreenAdapter {
     private void sendAliensForward(float duration) {
         for (int i = 0; i < 4; i++) {
             mAliens.get(i).addAction(moveTo(mAliens.get(i).getX(),
-                            mRockets.get(i).getY() + mRockets.get(i).getHeight() * (20f / 52f) - mAliens.get(i).getHeight(), duration));
+                    mRockets.get(i).getY() + mRockets.get(i).getHeight() * (20f / 52f) - mAliens.get(i).getHeight(), duration));
         }
     }
 }

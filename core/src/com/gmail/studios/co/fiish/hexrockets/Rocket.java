@@ -21,6 +21,7 @@ public class Rocket extends Actor { //Rocket fin starts at 21 pixels from bottom
     private float mSpriteHeight = -1;
 
     private float mElapsedTime = -1;
+    private float mAlphaDef = 1f;
 
     public Rocket(Viewport viewport, TextureAtlas atlas, int id) {
         mViewport = viewport;
@@ -58,10 +59,12 @@ public class Rocket extends Actor { //Rocket fin starts at 21 pixels from bottom
         mElapsedTime = 0f;
 
         this.setTouchable(Touchable.enabled);
+        this.setColor(getColor().r, getColor().g, getColor().b, mAlphaDef);
     }
 
     public void reset() {
         this.clearActions();
+        this.setColor(getColor().r, getColor().g, getColor().b, mAlphaDef);
     }
 
     @Override
@@ -72,6 +75,7 @@ public class Rocket extends Actor { //Rocket fin starts at 21 pixels from bottom
 
     @Override
     public void draw(Batch batch, float alpha) {
+        batch.setColor(getColor().r, getColor().g, getColor().b, getColor().a * alpha);
         batch.draw(mAnimation.getKeyFrame(mElapsedTime, true), this.getX(), this.getY(), this.getWidth(), this.getHeight());
     }
 

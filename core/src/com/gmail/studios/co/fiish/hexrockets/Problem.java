@@ -24,7 +24,7 @@ public class Problem {
             mProblemType = ProblemType.Addition;
             mSolution = MathUtils.random(2, bound);
 
-            mTerm1 = MathUtils.random(1, mSolution);
+            mTerm1 = MathUtils.random(1, mSolution - 1);
             mTerm2 = mSolution - mTerm1;
         } else {
             mProblemType = ProblemType.Subtraction;
