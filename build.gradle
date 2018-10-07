@@ -25,7 +25,7 @@ allprojects {
     ext {
         appName = "Hex Rockets"
         gdxVersion = '1.9.9-SNAPSHOT'
-        roboVMVersion = '2.3.3'
+        roboVMVersion = '2.3.5'
         box2DLightsVersion = '1.4'
         ashleyVersion = '1.7.0'
         aiVersion = '1.8.0'
@@ -67,6 +67,11 @@ project(":ios") {
     apply plugin: "java"
     apply plugin: "robovm"
 
+    robovm {
+        iosSignIdentity = "0305784043A088F551CD83E9CBDDC5525647E783"
+        iosProvisioningProfile = "cc3c8fe4-d471-4f67-88c7-4d2cf67c8f4e"
+        iosSkipSigning = false
+    }
 
     dependencies {
         compile project(":core")

@@ -1,61 +1,89 @@
 
 spritesheet.png
-size: 128,64
+size: 256,256
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 alienGreen
   rotate: false
-  xy: 52, 46
+  xy: 2, 2
   size: 23, 15
   orig: 23, 15
   offset: 0, 0
   index: 1
 alienGreen
   rotate: false
-  xy: 52, 29
+  xy: 196, 166
   size: 23, 15
   orig: 23, 15
   offset: 0, 0
   index: 2
+gameover
+  rotate: false
+  xy: 88, 93
+  size: 70, 12
+  orig: 70, 12
+  offset: 0, 0
+  index: -1
+home
+  rotate: false
+  xy: 2, 63
+  size: 84, 42
+  orig: 84, 42
+  offset: 0, 0
+  index: -1
+replay
+  rotate: false
+  xy: 2, 19
+  size: 84, 42
+  orig: 84, 42
+  offset: 0, 0
+  index: -1
 rocket
   rotate: false
-  xy: 2, 9
+  xy: 196, 183
   size: 23, 52
   orig: 23, 52
   offset: 0, 0
   index: 1
 rocket
   rotate: false
-  xy: 27, 9
+  xy: 88, 39
   size: 23, 52
   orig: 23, 52
   offset: 0, 0
   index: 2
+scorebg
+  rotate: false
+  xy: 2, 107
+  size: 192, 128
+  orig: 192, 128
+  offset: 0, 0
+  index: -1
 star
   rotate: false
-  xy: 2, 2
+  xy: 160, 100
   size: 5, 5
   orig: 5, 5
   offset: 0, 0
   index: 1
 star
   rotate: false
-  xy: 77, 56
+  xy: 221, 230
   size: 5, 5
   orig: 5, 5
   offset: 0, 0
   index: 2
 star
   rotate: false
-  xy: 77, 56
+  xy: 221, 230
   size: 5, 5
   orig: 5, 5
   offset: 0, 0
   index: 4
 star
   rotate: false
-  xy: 52, 22
+  xy: 88, 32
   size: 5, 5
   orig: 5, 5
   offset: 0, 0
