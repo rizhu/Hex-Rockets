@@ -28,8 +28,10 @@ public class GameScreen extends ScreenAdapter {
     private Array<Star> mStars;
     private Stage mMainStage, mGameOverUI;
 
-    private ReplayButton mReplayButton;
+    private GameOverLogo mGameOverLogo;
     private ScoreBG mScoreBG;
+    private HomeButton mHomeButton;
+    private ReplayButton mReplayButton;
 
     private Problem mProblem;
     private AnswerSet mAnswerSet;
@@ -41,10 +43,15 @@ public class GameScreen extends ScreenAdapter {
 
     private int mScore = -1;
     private boolean mCheckAlienPositions = true;
-    private boolean mGameOverSequence = false;
 
     public GameScreen(TextureAtlas atlas) {
         mViewport = new ScreenViewport();
+
+        mGenerator = new FreeTypeFontGenerator(Gdx.files.internal("font.ttf"));
+        mProblemParam = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        mAnswerParam = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        mScoreParam = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        mLayout = new GlyphLayout();
 
         mMainStage = new Stage(mViewport);
         mGameOverUI = new Stage(mViewport);
@@ -77,13 +84,20 @@ public class GameScreen extends ScreenAdapter {
             mAliens.add(new Alien(mViewport, atlas, i));
         }
 
+        mGameOverLogo = new GameOverLogo(mViewport, atlas);
+        mScoreBG = new ScoreBG(mViewport, atlas, mGenerator);
         mReplayButton = new ReplayButton(mViewport, atlas) {
             @Override
             public void press() {
                 replayButtonPress();
             }
         };
-        mScoreBG = new ScoreBG(mViewport, atlas);
+        mHomeButton = new HomeButton(mViewport, atlas) {
+            @Override
+            public void press() {
+                homeButtonPress();
+            }
+        };
 
         mProblem = new Problem();
         mAnswerSet = new AnswerSet();
@@ -94,12 +108,6 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void show() {
-        mGenerator = new FreeTypeFontGenerator(Gdx.files.internal("font.ttf"));
-        mProblemParam = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        mAnswerParam = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        mScoreParam = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        mLayout = new GlyphLayout();
-
         Gdx.gl.glClearColor(0, 0, 0, 1);
 
         Gdx.input.setInputProcessor(mMainStage);
@@ -125,11 +133,15 @@ public class GameScreen extends ScreenAdapter {
             mMainStage.addActor(mAliens.get(i));
         }
 
-        mReplayButton.init();
+        mGameOverLogo.init();
         mScoreBG.init();
+        mHomeButton.init();
+        mReplayButton.init();
 
-        mGameOverUI.addActor(mReplayButton);
+        mGameOverUI.addActor(mGameOverLogo);
         mGameOverUI.addActor(mScoreBG);
+        mGameOverUI.addActor(mHomeButton);
+        mGameOverUI.addActor(mReplayButton);
 
         mProblemParam.size = (int) (0.075f * mViewport.getScreenHeight());
         mProblemParam.color = Color.WHITE;
@@ -207,27 +219,59 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private void gameOverSequence() {
+        mScoreBG.setScore(mScore);
+
         for (int i = 0; i < 4; ++i) {
             mRockets.get(i).setTouchable(Touchable.disabled);
             mAliens.get(i).clearActions();
             mRockets.get(i).addAction(fadeOut(0.25f));
         }
+
         mRockets.get(0).addAction(delay(0.25f, run(new Runnable() {
             @Override
             public void run() {
                 Gdx.input.setInputProcessor(mGameOverUI);
             }
         })));
-        mReplayButton.addAction(delay(0.3f, run(new Runnable() {
-                    @Override
-                    public void run() {
-                        mReplayButton.setTouchable(Touchable.enabled);
-                        mReplayButton.addAction(moveTo(mViewport.getScreenWidth() / 8f * 7f - mReplayButton.getWidth(), mViewport.getScreenHeight() * 0.4f - 1.1f * mReplayButton.getHeight(), 0.35f));
-                        mReplayButton.addAction(fadeIn(0.35f));
-                    }
-                })));
+
+        mGameOverLogo.addAction(delay(0.3f, run(new Runnable() {
+            @Override
+            public void run() {
+                mGameOverLogo.addAction(moveTo(mViewport.getScreenWidth() / 2 - mGameOverLogo.getWidth() / 2, mViewport.getScreenHeight() * 0.68f, 0.35f));
+                mGameOverLogo.addAction(fadeIn(0.35f));
+            }
+        })));
+
         mScoreBG.addAction(delay(0.3f, fadeIn(0.35f)));
 
+        mHomeButton.addAction(delay(0.3f, run(new Runnable() {
+            @Override
+            public void run() {
+                mHomeButton.setTouchable(Touchable.enabled);
+                mHomeButton.addAction(moveTo(mViewport.getScreenWidth() / 8f, mViewport.getScreenHeight() * 0.4f - 1.1f * mHomeButton.getHeight(), 0.35f));
+                mHomeButton.addAction(fadeIn(0.35f));
+            }
+        })));
+
+        mReplayButton.addAction(delay(0.3f, run(new Runnable() {
+            @Override
+                public void run() {
+                    mReplayButton.setTouchable(Touchable.enabled);
+                    mReplayButton.addAction(moveTo(mViewport.getScreenWidth() / 8f * 7f - mReplayButton.getWidth(), mViewport.getScreenHeight() * 0.4f - 1.1f * mReplayButton.getHeight(), 0.35f));
+                    mReplayButton.addAction(fadeIn(0.35f));
+                }
+        })));
+    }
+
+    private void homeButtonPress() {
+        mHomeButton.addAction(sequence(/*run(new Runnable() {
+                    @Override
+                    public void run() {
+                        mHomeButton.setTouchable(Touchable.disabled);
+                    }
+                }),*/
+                moveBy(0, -10, 0.1f),
+                moveBy(0, 10, 0.1f)));
     }
 
     private void moveAliensBack() {
@@ -258,9 +302,16 @@ public class GameScreen extends ScreenAdapter {
                 run(new Runnable() {
                     @Override
                     public void run() {
+                        mGameOverLogo.addAction(moveTo(mViewport.getScreenWidth() / 2 - mGameOverLogo.getWidth() / 2, mViewport.getScreenHeight() * 0.75f, 0.35f));
+                        mGameOverLogo.addAction(fadeOut(0.35f));
+
+                        mScoreBG.addAction(fadeOut(0.35f));
+
+                        mHomeButton.addAction(moveTo(mViewport.getScreenWidth() / 8f, mViewport.getScreenHeight() * 0.25f, 0.35f));
+                        mHomeButton.addAction(fadeOut(0.35f));
+
                         mReplayButton.addAction(moveTo(mViewport.getScreenWidth() / 8f * 7f - mReplayButton.getWidth(), mViewport.getScreenHeight() * 0.25f, 0.35f));
                         mReplayButton.addAction(fadeOut(0.35f));
-                        mScoreBG.addAction(fadeOut(0.35f));
                     }
                 }),
                 delay(0.35f, run(new Runnable() {
