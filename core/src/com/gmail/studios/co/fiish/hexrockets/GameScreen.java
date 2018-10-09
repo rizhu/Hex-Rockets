@@ -1,6 +1,7 @@
 package com.gmail.studios.co.fiish.hexrockets;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -10,6 +11,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
@@ -22,11 +25,17 @@ public class GameScreen extends ScreenAdapter {
 
     private Viewport mViewport;
     private SpriteBatch mBatch;
+    private Preferences mData;
+
+    private Stage mTitleUI, mMainStage, mGameOverUI;
+
+    private HexRocketsLogo mLogo;
+    private NormalButton mNormalButton;
+    private HardButton mHardButton;
 
     private Array<Rocket> mRockets;
     private Array<Alien> mAliens;
     private Array<Star> mStars;
-    private Stage mMainStage, mGameOverUI;
 
     private GameOverLogo mGameOverLogo;
     private ScoreBG mScoreBG;
@@ -43,9 +52,11 @@ public class GameScreen extends ScreenAdapter {
 
     private int mScore = -1;
     private boolean mCheckAlienPositions = true;
+    private boolean mHardMode = false;
 
     public GameScreen(TextureAtlas atlas) {
         mViewport = new ScreenViewport();
+        mData = Gdx.app.getPreferences("Data");
 
         mGenerator = new FreeTypeFontGenerator(Gdx.files.internal("font.ttf"));
         mProblemParam = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -53,8 +64,25 @@ public class GameScreen extends ScreenAdapter {
         mScoreParam = new FreeTypeFontGenerator.FreeTypeFontParameter();
         mLayout = new GlyphLayout();
 
+        mTitleUI = new Stage((mViewport));
         mMainStage = new Stage(mViewport);
         mGameOverUI = new Stage(mViewport);
+
+        mLogo = new HexRocketsLogo(mViewport, atlas);
+        mNormalButton = new NormalButton(mViewport, atlas) {
+            @Override
+            public void press() {
+                mHardMode = false;
+                normalButtonPress();
+            }
+        };
+        mHardButton = new HardButton(mViewport, atlas) {
+            @Override
+            public void press() {
+                mHardMode = true;
+                hardButtonPress();
+            }
+        };
 
         mRockets = new Array<Rocket>(4);
         mAliens = new Array<Alien>(4);
@@ -69,9 +97,16 @@ public class GameScreen extends ScreenAdapter {
                 @Override
                 public void newProblem() {
                     ++mScore;
-                    for (int i = 0; i < 4; i++) {
+                    if (mHardMode) {
+                        setUpProblem(255);
+                        for (int i = 0; i < 4; i++) {
+                            resetAlienPosition(30f / (mScore + 3f) + 5);
+                        }
+                    } else {
                         setUpProblem(15);
-                        resetAlienPosition(11f / (mScore + 3.6666f) + 1);
+                        for (int i = 0; i < 4; i++) {
+                            resetAlienPosition(11f / (mScore + 3.6666f) + 1);
+                        }
                     }
                 }
 
@@ -109,10 +144,6 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void show() {
         Gdx.gl.glClearColor(0, 0, 0, 1);
-
-        Gdx.input.setInputProcessor(mMainStage);
-        setUpProblem(15);
-        mCheckAlienPositions = true;
     }
 
     @Override
@@ -120,6 +151,14 @@ public class GameScreen extends ScreenAdapter {
         mViewport.update(width, height);
 
         Gdx.app.log("Star size", "" + mStars.size);
+
+        mLogo.init();
+        mNormalButton.init();
+        mHardButton.init();
+
+        mTitleUI.addActor(mLogo);
+        mTitleUI.addActor(mNormalButton);
+        mTitleUI.addActor(mHardButton);
 
         for (int i = 0; i < mStars.size; ++i) {
             mStars.get(i).init();
@@ -156,7 +195,8 @@ public class GameScreen extends ScreenAdapter {
         mScoreFont = mGenerator.generateFont(mScoreParam);
 
         mScore = 0;
-        sendAliensForward(4);
+
+        Gdx.input.setInputProcessor(mTitleUI);
     }
 
     @Override
@@ -184,11 +224,18 @@ public class GameScreen extends ScreenAdapter {
             mGameOverUI.act(delta);
             mGameOverUI.draw();
         }
+
+        if (Gdx.input.getInputProcessor().equals(mTitleUI)) {
+            mTitleUI.act(delta);
+            mTitleUI.draw();
+        }
     }
 
     @Override
     public void dispose() {
+        mTitleUI.dispose();
         mMainStage.dispose();
+        mGameOverUI.dispose();
         mBatch.dispose();
         mProblemFont.dispose();
         mGenerator.dispose();
@@ -214,17 +261,30 @@ public class GameScreen extends ScreenAdapter {
                     mRockets.get(i).getY() + 1.075f * mRockets.get(i).getHeight() + mLayout.height);
         }
 
-        mLayout.setText(mScoreFont, "Streak: " + mScore);
+        mLayout.setText(mScoreFont, "" + mScore);
         mScoreFont.draw(mBatch, mLayout, mViewport.getScreenWidth() / 2f - mLayout.width / 2f, mViewport.getScreenHeight() * 0.26f);
     }
 
     private void gameOverSequence() {
-        mScoreBG.setScore(mScore);
+        if (mHardMode) {
+            if (mScore > mData.getInteger("hardHigh", 0)) {
+                mData.putInteger("hardHigh", mScore);
+                mData.flush();
+            }
+            mScoreBG.setScores(mScore, mData.getInteger("hardHigh", 0));
+        } else {
+            if (mScore > mData.getInteger("normalHigh", 0)) {
+                mData.putInteger("normalHigh", mScore);
+                mData.flush();
+            }
+            mScoreBG.setScores(mScore, mData.getInteger("normalHigh", 0));
+        }
 
         for (int i = 0; i < 4; ++i) {
             mRockets.get(i).setTouchable(Touchable.disabled);
             mAliens.get(i).clearActions();
             mRockets.get(i).addAction(fadeOut(0.25f));
+            mAliens.get(i).addAction(fadeOut(0.25f));
         }
 
         mRockets.get(0).addAction(delay(0.25f, run(new Runnable() {
@@ -237,12 +297,12 @@ public class GameScreen extends ScreenAdapter {
         mGameOverLogo.addAction(delay(0.3f, run(new Runnable() {
             @Override
             public void run() {
-                mGameOverLogo.addAction(moveTo(mViewport.getScreenWidth() / 2 - mGameOverLogo.getWidth() / 2, mViewport.getScreenHeight() * 0.68f, 0.35f));
+                mGameOverLogo.addAction(moveTo(mViewport.getScreenWidth() / 2 - mGameOverLogo.getWidth() / 2, mViewport.getScreenHeight() * 0.4f + 1.03f * mScoreBG.getHeight(), 0.35f));
                 mGameOverLogo.addAction(fadeIn(0.35f));
             }
         })));
 
-        mScoreBG.addAction(delay(0.3f, fadeIn(0.35f)));
+        mScoreBG.addAction(delay(0.3f, moveTo(mScoreBG.getX(), mViewport.getScreenHeight() * 0.4f, 0.35f)));
 
         mHomeButton.addAction(delay(0.3f, run(new Runnable() {
             @Override
@@ -263,15 +323,54 @@ public class GameScreen extends ScreenAdapter {
         })));
     }
 
+    private void hardButtonPress() {
+        mHardButton.addAction(sequence(run(new Runnable() {
+                    @Override
+                    public void run() {
+                        mNormalButton.setTouchable(Touchable.disabled);
+                        mHardButton.setTouchable(Touchable.disabled);
+                    }
+                }),
+                moveBy(0, -10, 0.1f),
+                moveBy(0, 10, 0.1f),
+                run(new Runnable() {
+                    @Override
+                    public void run() {
+                        startGameSequence();
+                    }
+                })));
+    }
+
     private void homeButtonPress() {
-        mHomeButton.addAction(sequence(/*run(new Runnable() {
+        mHomeButton.addAction(sequence(run(new Runnable() {
                     @Override
                     public void run() {
                         mHomeButton.setTouchable(Touchable.disabled);
                     }
-                }),*/
+                }),
                 moveBy(0, -10, 0.1f),
-                moveBy(0, 10, 0.1f)));
+                moveBy(0, 10, 0.1f),
+                run(new Runnable() {
+                    @Override
+                    public void run() {
+                        mGameOverLogo.addAction(moveTo(mViewport.getScreenWidth() / 2 - mGameOverLogo.getWidth() / 2, mViewport.getScreenHeight() * 0.75f, 0.35f));
+                        mGameOverLogo.addAction(fadeOut(0.35f));
+
+                        mScoreBG.addAction(moveTo(mScoreBG.getX(), mViewport.getScreenHeight(), 0.35f));
+
+                        mHomeButton.addAction(moveTo(mViewport.getScreenWidth() / 8f, mViewport.getScreenHeight() * 0.25f, 0.35f));
+                        mHomeButton.addAction(fadeOut(0.35f));
+
+                        mReplayButton.addAction(moveTo(mViewport.getScreenWidth() / 8f * 7f - mReplayButton.getWidth(), mViewport.getScreenHeight() * 0.25f, 0.35f));
+                        mReplayButton.addAction(fadeOut(0.35f));
+                    }
+                }),
+                delay(0.35f, run(new Runnable() {
+                    @Override
+                    public void run() {
+                        startHomeSequence();
+                    }
+                }))));
     }
 
     private void moveAliensBack() {
@@ -281,9 +380,28 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
+    private void normalButtonPress() {
+        mNormalButton.addAction(sequence(run(new Runnable() {
+                    @Override
+                    public void run() {
+                        mNormalButton.setTouchable(Touchable.disabled);
+                        mHardButton.setTouchable(Touchable.disabled);
+                    }
+                }),
+                moveBy(0, -10, 0.1f),
+                moveBy(0, 10, 0.1f),
+                run(new Runnable() {
+                    @Override
+                    public void run() {
+                        startGameSequence();
+                    }
+                })));
+    }
+
     private void resetAlienPosition(float nextDuration) {
         for (int i = 0; i < 4; i++) {
             mAliens.get(i).clearActions();
+            mAliens.get(i).addAction(fadeIn(0.25f));
             mAliens.get(i).addAction(sequence(moveTo(mAliens.get(i).mInitialX, 0, 0.15f),
                     moveTo(mAliens.get(i).getX(),
                             mRockets.get(i).getY() + mRockets.get(i).getHeight() * (20f / 52f) - mAliens.get(i).getHeight(), nextDuration)));
@@ -305,7 +423,7 @@ public class GameScreen extends ScreenAdapter {
                         mGameOverLogo.addAction(moveTo(mViewport.getScreenWidth() / 2 - mGameOverLogo.getWidth() / 2, mViewport.getScreenHeight() * 0.75f, 0.35f));
                         mGameOverLogo.addAction(fadeOut(0.35f));
 
-                        mScoreBG.addAction(fadeOut(0.35f));
+                        mScoreBG.addAction(moveTo(mScoreBG.getX(), mViewport.getScreenHeight(), 0.35f));
 
                         mHomeButton.addAction(moveTo(mViewport.getScreenWidth() / 8f, mViewport.getScreenHeight() * 0.25f, 0.35f));
                         mHomeButton.addAction(fadeOut(0.35f));
@@ -324,7 +442,11 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private void resetGameSequence() {
-        setUpProblem(15);
+        if (mHardMode) {
+            setUpProblem(255);
+        } else {
+            setUpProblem(15);
+        }
         mScore = 0;
         mMainStage.addAction(run(new Runnable() {
             @Override
@@ -333,10 +455,49 @@ public class GameScreen extends ScreenAdapter {
                     mRockets.get(i).addAction(fadeIn(0.25f));
                     mRockets.get(i).setTouchable(Touchable.enabled);
                 }
-                resetAlienPosition(4);
-                mCheckAlienPositions = true;
+                if (mHardMode) {
+                    resetAlienPosition(15);
+                } else {
+                    resetAlienPosition(4);
+                }
             }
         }));
+        mCheckAlienPositions = true;
+    }
+
+    private void startGameSequence() {
+        mLogo.addAction(fadeOut(0.35f));
+        mHardButton.addAction(fadeOut(0.35f));
+        mNormalButton.addAction(sequence(fadeOut(0.35f), run(new Runnable() {
+            @Override
+            public void run() {
+                Gdx.input.setInputProcessor(mMainStage);
+                for (int i = 0; i < 4; ++i) {
+                    mRockets.get(i).addAction(fadeIn(0.35f));
+                    mAliens.get(i).addAction(fadeIn(0.35f));
+                }
+                if (mHardMode) {
+                    setUpProblem(255);
+                    sendAliensForward(15);
+                } else {
+                    setUpProblem(15);
+                    sendAliensForward(4);
+                }
+            }
+        })));
+    }
+
+    private void startHomeSequence() {
+        mScore = 0;
+        Gdx.input.setInputProcessor(mTitleUI);
+        mLogo.reset();
+        mNormalButton.reset();
+        mHardButton.reset();
+        for (int i = 0; i < 4; ++i) {
+            mRockets.get(i).reset();
+            mAliens.get(i).reset();
+        }
+        mCheckAlienPositions = true;
     }
 
     private void sendAliensForward(float duration) {

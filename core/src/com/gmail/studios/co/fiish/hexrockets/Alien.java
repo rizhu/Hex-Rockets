@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
+
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class Alien extends Actor {
@@ -25,6 +27,21 @@ public class Alien extends Actor {
         mViewport = viewport;
         mAnimation = new Animation<TextureRegion>(1f/4, atlas.findRegions("alienGreen"));
 
+        switch (id) {
+            case 0:
+                mAnimation = new Animation<TextureRegion>(1f/4, atlas.findRegions("alienRed"));
+                break;
+            case 1:
+                mAnimation = new Animation<TextureRegion>(1f/4, atlas.findRegions("alienPink"));
+                break;
+            case 2:
+                mAnimation = new Animation<TextureRegion>(1f/4, atlas.findRegions("alienCyan"));
+                break;
+            case 3:
+                mAnimation = new Animation<TextureRegion>(1f/4, atlas.findRegions("alienOrange"));
+                break;
+        }
+
         mID = id;
 
         mSpriteWidth = atlas.findRegion("alienGreen", 1).getRegionWidth();
@@ -40,6 +57,9 @@ public class Alien extends Actor {
         this.setX((2 * mID + 1) * mViewport.getScreenWidth() / 8f - getWidth() / 2f);
         this.setY(0);
 
+        this.setTouchable(Touchable.disabled);
+        this.setColor(getColor().r, getColor().g, getColor().b, 0);
+
         mInitialX = (2 * mID + 1) * mViewport.getScreenWidth() / 8f - getWidth() / 2f;
 
         mElapsedTime = 0f;
@@ -48,13 +68,11 @@ public class Alien extends Actor {
     public void reset() {
         this.clearActions();
 
-        this.addAction(delay(2, run(new Runnable() {
-            @Override
-            public void run() {
-                setX((2 * mID + 1) * mViewport.getScreenWidth() / 8f - getWidth() / 2f);
-                setY(0);
-            }
-        })));
+        this.setX((2 * mID + 1) * mViewport.getScreenWidth() / 8f - getWidth() / 2f);
+        this.setY(0);
+
+        this.setTouchable(Touchable.disabled);
+        this.setColor(getColor().r, getColor().g, getColor().b, 0);
     }
 
     @Override
@@ -65,6 +83,7 @@ public class Alien extends Actor {
 
     @Override
     public void draw(Batch batch, float alpha) {
+        batch.setColor(getColor().r, getColor().g, getColor().b, getColor().a * alpha);
         batch.draw(mAnimation.getKeyFrame(mElapsedTime, true), this.getX(), this.getY(), this.getWidth(), this.getHeight());
     }
 }

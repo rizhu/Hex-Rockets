@@ -1,89 +1,166 @@
 
 spritesheet.png
-size: 256,256
+size: 512,256
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+alienCyan
+  rotate: false
+  xy: 282, 164
+  size: 23, 15
+  orig: 23, 15
+  offset: 0, 0
+  index: 1
+alienCyan
+  rotate: false
+  xy: 418, 193
+  size: 23, 15
+  orig: 23, 15
+  offset: 0, 0
+  index: 2
 alienGreen
   rotate: false
-  xy: 2, 2
+  xy: 2, 19
   size: 23, 15
   orig: 23, 15
   offset: 0, 0
   index: 1
 alienGreen
   rotate: false
-  xy: 196, 166
+  xy: 88, 39
+  size: 23, 15
+  orig: 23, 15
+  offset: 0, 0
+  index: 2
+alienOrange
+  rotate: false
+  xy: 282, 147
+  size: 23, 15
+  orig: 23, 15
+  offset: 0, 0
+  index: 1
+alienOrange
+  rotate: false
+  xy: 307, 164
+  size: 23, 15
+  orig: 23, 15
+  offset: 0, 0
+  index: 2
+alienPink
+  rotate: false
+  xy: 443, 193
+  size: 23, 15
+  orig: 23, 15
+  offset: 0, 0
+  index: 1
+alienPink
+  rotate: false
+  xy: 2, 2
+  size: 23, 15
+  orig: 23, 15
+  offset: 0, 0
+  index: 2
+alienRed
+  rotate: false
+  xy: 27, 19
+  size: 23, 15
+  orig: 23, 15
+  offset: 0, 0
+  index: 1
+alienRed
+  rotate: false
+  xy: 113, 39
   size: 23, 15
   orig: 23, 15
   offset: 0, 0
   index: 2
 gameover
   rotate: false
-  xy: 88, 93
+  xy: 88, 110
   size: 70, 12
   orig: 70, 12
   offset: 0, 0
   index: -1
+hard
+  rotate: false
+  xy: 2, 80
+  size: 84, 42
+  orig: 84, 42
+  offset: 0, 0
+  index: -1
+hex-rockets
+  rotate: false
+  xy: 196, 181
+  size: 220, 71
+  orig: 220, 71
+  offset: 0, 0
+  index: -1
 home
   rotate: false
-  xy: 2, 63
+  xy: 196, 137
+  size: 84, 42
+  orig: 84, 42
+  offset: 0, 0
+  index: -1
+normal
+  rotate: false
+  xy: 418, 210
   size: 84, 42
   orig: 84, 42
   offset: 0, 0
   index: -1
 replay
   rotate: false
-  xy: 2, 19
+  xy: 2, 36
   size: 84, 42
   orig: 84, 42
   offset: 0, 0
   index: -1
 rocket
   rotate: false
-  xy: 196, 183
+  xy: 88, 56
   size: 23, 52
   orig: 23, 52
   offset: 0, 0
   index: 1
 rocket
   rotate: false
-  xy: 88, 39
+  xy: 113, 56
   size: 23, 52
   orig: 23, 52
   offset: 0, 0
   index: 2
 scorebg
   rotate: false
-  xy: 2, 107
+  xy: 2, 124
   size: 192, 128
   orig: 192, 128
   offset: 0, 0
   index: -1
 star
   rotate: false
-  xy: 160, 100
+  xy: 196, 130
   size: 5, 5
   orig: 5, 5
   offset: 0, 0
   index: 1
 star
   rotate: false
-  xy: 221, 230
+  xy: 504, 247
   size: 5, 5
   orig: 5, 5
   offset: 0, 0
   index: 2
 star
   rotate: false
-  xy: 221, 230
+  xy: 504, 247
   size: 5, 5
   orig: 5, 5
   offset: 0, 0
   index: 4
 star
   rotate: false
-  xy: 88, 32
+  xy: 160, 117
   size: 5, 5
   orig: 5, 5
   offset: 0, 0

@@ -1,6 +1,7 @@
 package com.gmail.studios.co.fiish.hexrockets;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -17,6 +18,7 @@ public class ScoreBG extends Actor {
     private TextureRegion mRegion;
 
     private int mScore = -1;
+    private int mHigh = -1;
 
     private FreeTypeFontGenerator mGenerator;
     private FreeTypeFontGenerator.FreeTypeFontParameter mParam;
@@ -38,9 +40,9 @@ public class ScoreBG extends Actor {
         this.setHeight(getWidth() / mRegion.getRegionWidth() * mRegion.getRegionHeight());
 
         this.setX(mViewport.getScreenWidth() / 2f - getWidth() / 2f);
-        this.setY(mViewport.getScreenHeight() * 0.4f);
+        this.setY(mViewport.getScreenHeight());
 
-        this.setColor(getColor().r, getColor().g, getColor().b, 0);
+        this.setColor(getColor().r, getColor().g, getColor().b, 1);
         this.setTouchable(Touchable.disabled);
 
         mParam = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -56,11 +58,12 @@ public class ScoreBG extends Actor {
         this.setX(mViewport.getScreenWidth() / 2f - mRegion.getRegionWidth() / 2f);
         this.setY(mViewport.getScreenHeight() + 10);
 
-        this.setColor(getColor().r, getColor().g, getColor().b, 0);
+        this.setColor(getColor().r, getColor().g, getColor().b, 1);
     }
 
-    public void setScore(int score) {
+    public void setScores(int score, int high) {
         mScore = score;
+        mHigh = high;
     }
 
     @Override
@@ -69,7 +72,10 @@ public class ScoreBG extends Actor {
         batch.draw(mRegion, getX(), getY(), getWidth(), getHeight());
 
         mLayout.setText(mFont, "" + mScore);
-        mFont.draw(batch, mLayout, getX() + getWidth() * 0.605f, getY() + getHeight() * 0.61f);
+        mFont.draw(batch, mLayout, getX() + getWidth() * 0.605f, getY() + getHeight() * 0.625f);
+
+        mLayout.setText(mFont, "" + mHigh);
+        mFont.draw(batch, mLayout, getX() + getWidth() * 0.605f, getY() + getHeight() * 0.245f);
     }
 
     public void dispose() {
