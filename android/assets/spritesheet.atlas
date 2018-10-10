@@ -1,166 +1,530 @@
 
 spritesheet.png
-size: 512,256
+size: 1024,1024
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 alienCyan
   rotate: false
-  xy: 282, 164
+  xy: 218, 158
   size: 23, 15
   orig: 23, 15
   offset: 0, 0
   index: 1
 alienCyan
   rotate: false
-  xy: 418, 193
+  xy: 243, 178
   size: 23, 15
   orig: 23, 15
   offset: 0, 0
   index: 2
 alienGreen
   rotate: false
-  xy: 2, 19
+  xy: 545, 203
   size: 23, 15
   orig: 23, 15
   offset: 0, 0
   index: 1
 alienGreen
   rotate: false
-  xy: 88, 39
+  xy: 218, 141
   size: 23, 15
   orig: 23, 15
   offset: 0, 0
   index: 2
 alienOrange
   rotate: false
-  xy: 282, 147
+  xy: 243, 161
   size: 23, 15
   orig: 23, 15
   offset: 0, 0
   index: 1
 alienOrange
   rotate: false
-  xy: 307, 164
+  xy: 545, 186
   size: 23, 15
   orig: 23, 15
   offset: 0, 0
   index: 2
 alienPink
   rotate: false
-  xy: 443, 193
+  xy: 570, 203
   size: 23, 15
   orig: 23, 15
   offset: 0, 0
   index: 1
 alienPink
+  rotate: false
+  xy: 218, 124
+  size: 23, 15
+  orig: 23, 15
+  offset: 0, 0
+  index: 2
+alienRed
+  rotate: false
+  xy: 243, 144
+  size: 23, 15
+  orig: 23, 15
+  offset: 0, 0
+  index: 1
+alienRed
+  rotate: false
+  xy: 570, 186
+  size: 23, 15
+  orig: 23, 15
+  offset: 0, 0
+  index: 2
+backright
+  rotate: false
+  xy: 243, 195
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+bronze
+  rotate: false
+  xy: 88, 153
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 1
+bronze
+  rotate: false
+  xy: 88, 153
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 5
+bronze
+  rotate: false
+  xy: 88, 153
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 9
+bronze
+  rotate: false
+  xy: 2, 65
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 2
+bronze
+  rotate: false
+  xy: 2, 65
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 4
+bronze
   rotate: false
   xy: 2, 2
-  size: 23, 15
-  orig: 23, 15
+  size: 63, 61
+  orig: 63, 61
   offset: 0, 0
-  index: 2
-alienRed
+  index: 3
+bronze
   rotate: false
-  xy: 27, 19
-  size: 23, 15
-  orig: 23, 15
+  xy: 282, 210
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 6
+bronze
+  rotate: false
+  xy: 282, 210
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 8
+bronze
+  rotate: false
+  xy: 347, 210
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 7
+bronze
+  rotate: false
+  xy: 504, 283
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 10
+bronze
+  rotate: false
+  xy: 504, 283
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 12
+bronze
+  rotate: false
+  xy: 569, 283
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 11
+credits
+  rotate: false
+  xy: 477, 186
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+diamond
+  rotate: false
+  xy: 634, 283
+  size: 63, 61
+  orig: 63, 61
   offset: 0, 0
   index: 1
-alienRed
+diamond
   rotate: false
-  xy: 113, 39
-  size: 23, 15
-  orig: 23, 15
+  xy: 634, 283
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 5
+diamond
+  rotate: false
+  xy: 634, 283
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 9
+diamond
+  rotate: false
+  xy: 699, 283
+  size: 63, 61
+  orig: 63, 61
   offset: 0, 0
   index: 2
+diamond
+  rotate: false
+  xy: 699, 283
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 4
+diamond
+  rotate: false
+  xy: 764, 283
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 3
+diamond
+  rotate: false
+  xy: 829, 283
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 6
+diamond
+  rotate: false
+  xy: 829, 283
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 8
+diamond
+  rotate: false
+  xy: 894, 283
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 7
+diamond
+  rotate: false
+  xy: 959, 283
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 10
+diamond
+  rotate: false
+  xy: 959, 283
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 12
+diamond
+  rotate: false
+  xy: 153, 153
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 11
 gameover
   rotate: false
-  xy: 88, 110
+  xy: 67, 13
   size: 70, 12
   orig: 70, 12
   offset: 0, 0
   index: -1
+gold
+  rotate: false
+  xy: 418, 239
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 1
+gold
+  rotate: false
+  xy: 418, 239
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 9
+gold
+  rotate: false
+  xy: 418, 239
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 5
+gold
+  rotate: false
+  xy: 88, 90
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 2
+gold
+  rotate: false
+  xy: 88, 90
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 4
+gold
+  rotate: false
+  xy: 153, 90
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 3
+gold
+  rotate: false
+  xy: 67, 27
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 6
+gold
+  rotate: false
+  xy: 67, 27
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 8
+gold
+  rotate: false
+  xy: 132, 27
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 7
+gold
+  rotate: false
+  xy: 412, 176
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 10
+gold
+  rotate: false
+  xy: 412, 176
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 12
+gold
+  rotate: false
+  xy: 483, 220
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 11
 hard
   rotate: false
-  xy: 2, 80
+  xy: 2, 172
   size: 84, 42
   orig: 84, 42
   offset: 0, 0
   index: -1
+help
+  rotate: false
+  xy: 511, 186
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+helpbg
+  rotate: false
+  xy: 2, 346
+  size: 1012, 675
+  orig: 1012, 675
+  offset: 0, 0
+  index: -1
 hex-rockets
   rotate: false
-  xy: 196, 181
+  xy: 196, 273
   size: 220, 71
   orig: 220, 71
   offset: 0, 0
   index: -1
 home
   rotate: false
-  xy: 196, 137
+  xy: 196, 229
   size: 84, 42
   orig: 84, 42
   offset: 0, 0
   index: -1
 normal
   rotate: false
-  xy: 418, 210
+  xy: 418, 302
   size: 84, 42
   orig: 84, 42
   offset: 0, 0
   index: -1
 replay
   rotate: false
-  xy: 2, 36
+  xy: 2, 128
   size: 84, 42
   orig: 84, 42
   offset: 0, 0
   index: -1
 rocket
   rotate: false
-  xy: 88, 56
+  xy: 197, 36
   size: 23, 52
   orig: 23, 52
   offset: 0, 0
   index: 1
 rocket
   rotate: false
-  xy: 113, 56
+  xy: 218, 175
   size: 23, 52
   orig: 23, 52
   offset: 0, 0
   index: 2
 scorebg
   rotate: false
-  xy: 2, 124
+  xy: 2, 216
   size: 192, 128
   orig: 192, 128
   offset: 0, 0
   index: -1
+silver
+  rotate: false
+  xy: 548, 220
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 1
+silver
+  rotate: false
+  xy: 548, 220
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 5
+silver
+  rotate: false
+  xy: 548, 220
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 9
+silver
+  rotate: false
+  xy: 613, 220
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 2
+silver
+  rotate: false
+  xy: 613, 220
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 4
+silver
+  rotate: false
+  xy: 678, 220
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 3
+silver
+  rotate: false
+  xy: 743, 220
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 6
+silver
+  rotate: false
+  xy: 743, 220
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 8
+silver
+  rotate: false
+  xy: 808, 220
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 7
+silver
+  rotate: false
+  xy: 873, 220
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 10
+silver
+  rotate: false
+  xy: 873, 220
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 12
+silver
+  rotate: false
+  xy: 938, 220
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: 11
 star
   rotate: false
-  xy: 196, 130
+  xy: 1016, 1016
   size: 5, 5
   orig: 5, 5
   offset: 0, 0
   index: 1
 star
   rotate: false
-  xy: 504, 247
+  xy: 67, 121
   size: 5, 5
   orig: 5, 5
   offset: 0, 0
   index: 2
 star
   rotate: false
-  xy: 504, 247
+  xy: 67, 121
   size: 5, 5
   orig: 5, 5
   offset: 0, 0
   index: 4
 star
   rotate: false
-  xy: 160, 117
+  xy: 483, 295
   size: 5, 5
   orig: 5, 5
   offset: 0, 0

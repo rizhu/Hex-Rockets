@@ -11,8 +11,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
@@ -27,11 +25,16 @@ public class GameScreen extends ScreenAdapter {
     private SpriteBatch mBatch;
     private Preferences mData;
 
-    private Stage mTitleUI, mMainStage, mGameOverUI;
+    private Stage mTitleUI, mHelpUI, mMainStage, mGameOverUI;
 
     private HexRocketsLogo mLogo;
     private NormalButton mNormalButton;
     private HardButton mHardButton;
+    //private CreditsButton mCreditsButton;
+    private HelpButton mHelpButton;
+
+    private HelpBG mHelpBG;
+    private BackRightButton mBackRightButton;
 
     private Array<Rocket> mRockets;
     private Array<Alien> mAliens;
@@ -64,7 +67,8 @@ public class GameScreen extends ScreenAdapter {
         mScoreParam = new FreeTypeFontGenerator.FreeTypeFontParameter();
         mLayout = new GlyphLayout();
 
-        mTitleUI = new Stage((mViewport));
+        mTitleUI = new Stage(mViewport);
+        mHelpUI = new Stage(mViewport);
         mMainStage = new Stage(mViewport);
         mGameOverUI = new Stage(mViewport);
 
@@ -81,6 +85,20 @@ public class GameScreen extends ScreenAdapter {
             public void press() {
                 mHardMode = true;
                 hardButtonPress();
+            }
+        };
+        mHelpButton = new HelpButton(mViewport, atlas) {
+            @Override
+            public void press() {
+                helpButtonPress();
+            }
+        };
+
+        mHelpBG = new HelpBG(mViewport, atlas);
+        mBackRightButton = new BackRightButton(mViewport, atlas) {
+            @Override
+            public void press() {
+                backRightButtonPress();
             }
         };
 
@@ -150,15 +168,21 @@ public class GameScreen extends ScreenAdapter {
     public void resize(int width, int height) {
         mViewport.update(width, height);
 
-        Gdx.app.log("Star size", "" + mStars.size);
-
         mLogo.init();
         mNormalButton.init();
         mHardButton.init();
+        mHelpButton.init();
 
         mTitleUI.addActor(mLogo);
         mTitleUI.addActor(mNormalButton);
         mTitleUI.addActor(mHardButton);
+        mTitleUI.addActor(mHelpButton);
+
+        mHelpBG.init();
+        mBackRightButton.init();
+
+        mHelpUI.addActor(mHelpBG);
+        mHelpUI.addActor(mBackRightButton);
 
         for (int i = 0; i < mStars.size; ++i) {
             mStars.get(i).init();
@@ -229,16 +253,45 @@ public class GameScreen extends ScreenAdapter {
             mTitleUI.act(delta);
             mTitleUI.draw();
         }
+
+        if (Gdx.input.getInputProcessor().equals(mHelpUI)) {
+            mHelpUI.act(delta);
+            mHelpUI.draw();
+        }
     }
 
     @Override
     public void dispose() {
         mTitleUI.dispose();
+        mHelpUI.dispose();
         mMainStage.dispose();
         mGameOverUI.dispose();
         mBatch.dispose();
         mProblemFont.dispose();
         mGenerator.dispose();
+    }
+
+    private void backRightButtonPress() {
+        mBackRightButton.addAction(sequence(run(new Runnable() {
+                    @Override
+                    public void run() {
+                        mBackRightButton.setTouchable(Touchable.disabled);
+                    }
+                }),
+                moveBy(0, -10, 0.1f),
+                moveBy(0, 10, 0.1f),
+                run(new Runnable() {
+                    @Override
+                    public void run() {
+                        mBackRightButton.addAction(fadeOut(0.35f));
+                        mHelpBG.addAction(fadeOut(0.35f));
+                        Gdx.input.setInputProcessor(mTitleUI);
+                        mTitleUI.addAction(fadeIn(0.35f));
+                        mNormalButton.setTouchable(Touchable.enabled);
+                        mHardButton.setTouchable(Touchable.enabled);
+                        mHelpButton.setTouchable(Touchable.enabled);
+                    }
+                })));
     }
 
     private void checkAlienPosition() {
@@ -271,13 +324,13 @@ public class GameScreen extends ScreenAdapter {
                 mData.putInteger("hardHigh", mScore);
                 mData.flush();
             }
-            mScoreBG.setScores(mScore, mData.getInteger("hardHigh", 0));
+            mScoreBG.sendData(mScore, mData.getInteger("hardHigh", 0), mHardMode);
         } else {
             if (mScore > mData.getInteger("normalHigh", 0)) {
                 mData.putInteger("normalHigh", mScore);
                 mData.flush();
             }
-            mScoreBG.setScores(mScore, mData.getInteger("normalHigh", 0));
+            mScoreBG.sendData(mScore, mData.getInteger("normalHigh", 0), mHardMode);
         }
 
         for (int i = 0; i < 4; ++i) {
@@ -329,6 +382,7 @@ public class GameScreen extends ScreenAdapter {
                     public void run() {
                         mNormalButton.setTouchable(Touchable.disabled);
                         mHardButton.setTouchable(Touchable.disabled);
+                        mHelpButton.setTouchable(Touchable.disabled);
                     }
                 }),
                 moveBy(0, -10, 0.1f),
@@ -337,6 +391,30 @@ public class GameScreen extends ScreenAdapter {
                     @Override
                     public void run() {
                         startGameSequence();
+                    }
+                })));
+    }
+
+    private void helpButtonPress() {
+        mHelpButton.addAction(sequence(run(new Runnable() {
+                    @Override
+                    public void run() {
+                        mNormalButton.setTouchable(Touchable.disabled);
+                        mHardButton.setTouchable(Touchable.disabled);
+                        mHelpButton.setTouchable(Touchable.disabled);
+                    }
+                }),
+                moveBy(0, -10, 0.1f),
+                moveBy(0, 10, 0.1f)
+                ));
+        mTitleUI.addAction(sequence(fadeOut(0.35f),
+                run(new Runnable() {
+                    @Override
+                    public void run() {
+                        Gdx.input.setInputProcessor(mHelpUI);
+                        mHelpBG.addAction(fadeIn(0.35f));
+                        mBackRightButton.addAction(fadeIn(0.35f));
+                        mBackRightButton.setTouchable(Touchable.enabled);
                     }
                 })));
     }
@@ -386,6 +464,7 @@ public class GameScreen extends ScreenAdapter {
                     public void run() {
                         mNormalButton.setTouchable(Touchable.disabled);
                         mHardButton.setTouchable(Touchable.disabled);
+                        mHelpButton.setTouchable(Touchable.disabled);
                     }
                 }),
                 moveBy(0, -10, 0.1f),
@@ -460,9 +539,9 @@ public class GameScreen extends ScreenAdapter {
                 } else {
                     resetAlienPosition(4);
                 }
+                mCheckAlienPositions = true;
             }
         }));
-        mCheckAlienPositions = true;
     }
 
     private void startGameSequence() {
@@ -485,6 +564,7 @@ public class GameScreen extends ScreenAdapter {
                 }
             }
         })));
+        mHelpButton.addAction(fadeOut(0.35f));
     }
 
     private void startHomeSequence() {
@@ -493,6 +573,7 @@ public class GameScreen extends ScreenAdapter {
         mLogo.reset();
         mNormalButton.reset();
         mHardButton.reset();
+        mHelpButton.reset();
         for (int i = 0; i < 4; ++i) {
             mRockets.get(i).reset();
             mAliens.get(i).reset();
@@ -510,19 +591,14 @@ public class GameScreen extends ScreenAdapter {
     private void setUpProblem(int bound) {
         mProblem.generateProblem(bound);
 
-        Gdx.app.log("Problem", mProblem.toString());
-        Gdx.app.log("Solution", "" + Integer.toHexString(mProblem.getSolution()));
-
         mAnswerSet.generateAnswers(mProblem.getSolution(), bound, 32);
 
         for (int i = 0; i < 4; ++i) {
-            Gdx.app.log("" + i, "" + Integer.toHexString(mAnswerSet.getAnswerSet().get(i)));
             if (i == mAnswerSet.getAnswerIndex()) {
                 mRockets.get(i).setAnswerState(AnswerState.Correct);
             } else {
                 mRockets.get(i).setAnswerState(AnswerState.Incorrect);
             }
-            Gdx.app.log("" + i, "" + mRockets.get(i).getAnswerState());
         }
     }
 }
