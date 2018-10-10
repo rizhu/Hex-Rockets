@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -25,7 +24,6 @@ public class Alien extends Actor {
 
     public Alien(Viewport viewport, TextureAtlas atlas, int id) {
         mViewport = viewport;
-        mAnimation = new Animation<TextureRegion>(1f/4, atlas.findRegions("alienGreen"));
 
         switch (id) {
             case 0:
@@ -44,8 +42,8 @@ public class Alien extends Actor {
 
         mID = id;
 
-        mSpriteWidth = atlas.findRegion("alienGreen", 1).getRegionWidth();
-        mSpriteHeight = atlas.findRegion("alienGreen", 1).getRegionHeight();
+        mSpriteWidth = atlas.findRegion("alienRed", 1).getRegionWidth();
+        mSpriteHeight = atlas.findRegion("alienRed", 1).getRegionHeight();
     }
 
     public void init() {

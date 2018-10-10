@@ -83,10 +83,6 @@ public class Rocket extends Actor { //Rocket fin starts at 21 pixels from bottom
         batch.draw(mAnimation.getKeyFrame(mElapsedTime, true), this.getX(), this.getY(), this.getWidth(), this.getHeight());
     }
 
-    public AnswerState getAnswerState() {
-        return mAnswerState;
-    }
-
     public void setAnswerState(AnswerState state) {
         mAnswerState = state;
     }

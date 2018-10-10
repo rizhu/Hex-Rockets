@@ -16,7 +16,7 @@ public class BackRightButton extends BasicButton {
         mWidthDef = mViewport.getScreenHeight() * 0.0625f;
         mHeightDef = mViewport.getScreenHeight() * 0.0625f;
 
-        mXDef = mViewport.getScreenWidth() / 9f * 8f + mViewport.getScreenWidth() / 9f * 0.7f - getWidth();
+        mXDef = mViewport.getScreenWidth() / 9f * 8f + mViewport.getScreenWidth() / 9f * 0.7f - mWidthDef;
         mYDef = mViewport.getScreenHeight() / 16f * 0.3f;
 
         mTouchableDef = Touchable.disabled;

@@ -20,7 +20,6 @@ public class AnswerSet {
         mAnswerIndex = MathUtils.random(0, 3);
         mAnswerList.clear();
         mSet.clear();
-        Gdx.app.log("Answer Index", "" + mAnswerIndex);
 
         if (solution - range < 0) {
             mLower = 0;

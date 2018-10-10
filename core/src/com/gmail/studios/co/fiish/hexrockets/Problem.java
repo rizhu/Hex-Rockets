@@ -1,6 +1,5 @@
 package com.gmail.studios.co.fiish.hexrockets;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 
 public class Problem {
@@ -33,7 +32,6 @@ public class Problem {
             mTerm1 = MathUtils.random(mSolution + 1, bound);
             mTerm2 = mTerm1 - mSolution;
         }
-        Gdx.app.log("Problem Type", "" + mProblemType);
     }
 
     public int getSolution() {

@@ -16,7 +16,7 @@ public class HardButton extends BasicButton {
         mWidthDef = mViewport.getScreenWidth() * 0.35f;
         mHeightDef = mWidthDef / mRegion.getRegionWidth() * mRegion.getRegionHeight();
 
-        mXDef = mViewport.getScreenWidth() / 2f - getWidth() / 2f;
+        mXDef = mViewport.getScreenWidth() / 2f - mWidthDef / 2f;
         mYDef = mViewport.getScreenHeight() * 0.3f;
 
         mTouchableDef = Touchable.enabled;

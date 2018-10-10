@@ -28,6 +28,8 @@
     <false/>
     <key>UIStatusBarHidden</key>
     <true/>
+    <key>UIRequiresFullScreen</key>
+    <true/>
     <key>UIDeviceFamily</key>
     <array>
         <integer>1</integer>
@@ -44,5 +46,20 @@
     </array>
     <key>CFBundleIconName</key>
     <string>AppIcon</string>
+    <key>MinimumOSVersion</key>
+    <string>9.0</string>
+    <key>CFBundleIcons</key>
+    <dict>
+        <key>CFBundlePrimaryIcon</key>
+        <dict>
+            <key>CFBundleIconFiles</key>
+            <array>
+                <string>Icon</string>
+                <string>Icon-60</string> <!-- added -->
+                <string>Icon-72</string>
+                <string>Icon-76</string> <!-- added -->
+            </array>
+        </dict>
+    </dict>
 </dict>
 </plist>

@@ -4,11 +4,11 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class HelpButton extends BasicButton {
+public class BackLeftButton extends BasicButton {
 
-    public HelpButton(Viewport viewport, TextureAtlas atlas) {
+    public BackLeftButton(Viewport viewport, TextureAtlas atlas) {
         mViewport = viewport;
-        mRegion = atlas.findRegion("help");
+        mRegion = atlas.findRegion("backleft");
     }
 
     @Override
@@ -16,12 +16,12 @@ public class HelpButton extends BasicButton {
         mWidthDef = mViewport.getScreenHeight() * 0.0625f;
         mHeightDef = mViewport.getScreenHeight() * 0.0625f;
 
-        mXDef = mViewport.getScreenWidth() / 9f * 8f + mViewport.getScreenWidth() / 9f * 0.7f - mWidthDef;
+        mXDef = mViewport.getScreenWidth() / 9f * 0.3f;
         mYDef = mViewport.getScreenHeight() / 16f * 0.3f;
 
-        mTouchableDef = Touchable.enabled;
+        mTouchableDef = Touchable.disabled;
 
-        mAlphaDef = 1;
+        mAlphaDef = 0;
         super.init();
     }
 
