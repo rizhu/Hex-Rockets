@@ -1,5 +1,7 @@
 package com.gmail.studios.co.fiish.hexrockets;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -91,6 +93,20 @@ public class ScoreBG extends Actor {
         batch.draw(mRegion, getX(), getY(), getWidth(), getHeight());
 
         if (mHardMode) {
+            if (mScore >= 20){
+                batch.draw(mDiamondAnimation.getKeyFrame(mElapsedTime, true),
+                        getX() + getWidth() * 0.082f, getY() + getHeight() * 0.135f, 63f / 192f * getWidth(), 61f / 128f * getHeight());
+            } else if (mScore >= 15){
+                batch.draw(mGoldAnimation.getKeyFrame(mElapsedTime, true),
+                        getX() + getWidth() * 0.082f, getY() + getHeight() * 0.135f, 63f / 192f * getWidth(), 61f / 128f * getHeight());
+            } else if (mScore >= 10){
+                batch.draw(mSilverAnimation.getKeyFrame(mElapsedTime, true),
+                        getX() + getWidth() * 0.082f, getY() + getHeight() * 0.135f, 63f / 192f * getWidth(), 61f / 128f * getHeight());
+            } else if (mScore >= 5){
+                batch.draw(mBronzeAnimation.getKeyFrame(mElapsedTime, true),
+                        getX() + getWidth() * 0.082f, getY() + getHeight() * 0.135f, 63f / 192f * getWidth(), 61f / 128f * getHeight());
+            }
+        } else {
             if (mScore >= 40){
                 batch.draw(mDiamondAnimation.getKeyFrame(mElapsedTime, true),
                         getX() + getWidth() * 0.082f, getY() + getHeight() * 0.135f, 63f / 192f * getWidth(), 61f / 128f * getHeight());
@@ -101,20 +117,6 @@ public class ScoreBG extends Actor {
                 batch.draw(mSilverAnimation.getKeyFrame(mElapsedTime, true),
                         getX() + getWidth() * 0.082f, getY() + getHeight() * 0.135f, 63f / 192f * getWidth(), 61f / 128f * getHeight());
             } else if (mScore >= 10){
-                batch.draw(mBronzeAnimation.getKeyFrame(mElapsedTime, true),
-                        getX() + getWidth() * 0.082f, getY() + getHeight() * 0.135f, 63f / 192f * getWidth(), 61f / 128f * getHeight());
-            }
-        } else {
-            if (mScore >= 60){
-                batch.draw(mDiamondAnimation.getKeyFrame(mElapsedTime, true),
-                        getX() + getWidth() * 0.082f, getY() + getHeight() * 0.135f, 63f / 192f * getWidth(), 61f / 128f * getHeight());
-            } else if (mScore >= 45){
-                batch.draw(mGoldAnimation.getKeyFrame(mElapsedTime, true),
-                        getX() + getWidth() * 0.082f, getY() + getHeight() * 0.135f, 63f / 192f * getWidth(), 61f / 128f * getHeight());
-            } else if (mScore >= 30){
-                batch.draw(mSilverAnimation.getKeyFrame(mElapsedTime, true),
-                        getX() + getWidth() * 0.082f, getY() + getHeight() * 0.135f, 63f / 192f * getWidth(), 61f / 128f * getHeight());
-            } else if (mScore >= 15){
                 batch.draw(mBronzeAnimation.getKeyFrame(mElapsedTime, true),
                         getX() + getWidth() * 0.082f, getY() + getHeight() * 0.135f, 63f / 192f * getWidth(), 61f / 128f * getHeight());
             }

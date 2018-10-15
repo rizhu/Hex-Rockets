@@ -3,6 +3,8 @@ package com.gmail.studios.co.fiish.hexrockets;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -56,11 +58,13 @@ public class GameScreen extends ScreenAdapter {
     private BitmapFont mProblemFont, mAnswerFont, mScoreFont;
     private GlyphLayout mLayout;
 
+    private Sound mCorrect, mDeath, mHighScore, mStart;
+
     private int mScore = -1;
     private boolean mCheckAlienPositions = true;
     private boolean mHardMode = false;
 
-    public GameScreen(TextureAtlas atlas) {
+    public GameScreen(TextureAtlas atlas, AssetManager manager) {
         mViewport = new ScreenViewport();
         mData = Gdx.app.getPreferences("Data");
 
@@ -133,6 +137,7 @@ public class GameScreen extends ScreenAdapter {
                 @Override
                 public void newProblem() {
                     ++mScore;
+                    mCorrect.play(1.0f);
                     if (mHardMode) {
                         setUpProblem(255);
                         for (int i = 0; i < 4; i++) {
@@ -174,6 +179,12 @@ public class GameScreen extends ScreenAdapter {
         mAnswerSet = new AnswerSet();
 
         mBatch = new SpriteBatch();
+
+        mCorrect = manager.get("correct.wav", Sound.class);
+        mDeath = manager.get("death.wav", Sound.class);
+        mHighScore = manager.get("highScore.wav", Sound.class);
+        mStart = manager.get("start.wav", Sound.class);
+
         FreeTypeFontGenerator.setMaxTextureSize(4096);
     }
 
@@ -302,6 +313,11 @@ public class GameScreen extends ScreenAdapter {
         mBatch.dispose();
         mProblemFont.dispose();
         mGenerator.dispose();
+
+        mCorrect.dispose();
+        mDeath.dispose();
+        mHighScore.dispose();
+        mStart.dispose();
     }
 
     private void backLeftButtonPress() {
@@ -402,16 +418,19 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private void gameOverSequence() {
+        mDeath.play(1.0f);
         if (mHardMode) {
             if (mScore > mData.getInteger("hardHigh", 0)) {
                 mData.putInteger("hardHigh", mScore);
                 mData.flush();
+                mHighScore.play(1.0f);
             }
             mScoreBG.sendData(mScore, mData.getInteger("hardHigh", 0), mHardMode);
         } else {
             if (mScore > mData.getInteger("normalHigh", 0)) {
                 mData.putInteger("normalHigh", mScore);
                 mData.flush();
+                mHighScore.play(1.0f);
             }
             mScoreBG.sendData(mScore, mData.getInteger("normalHigh", 0), mHardMode);
         }
@@ -477,6 +496,7 @@ public class GameScreen extends ScreenAdapter {
                         startGameSequence();
                     }
                 })));
+        mStart.play(1.0f);
     }
 
     private void helpButtonPress() {
@@ -555,6 +575,7 @@ public class GameScreen extends ScreenAdapter {
                         startGameSequence();
                     }
                 })));
+        mStart.play(1.0f);
     }
 
     private void resetAlienPosition(float nextDuration) {
