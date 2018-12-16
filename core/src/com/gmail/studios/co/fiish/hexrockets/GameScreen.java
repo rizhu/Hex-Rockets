@@ -38,7 +38,9 @@ public class GameScreen extends ScreenAdapter {
     private CreditsBG mCreditsBG;
     private BackLeftButton mBackLeftButton;
 
-    private HelpBG mHelpBG;
+    private Array<BasicHelpPrompt> mHelpPrompts;
+    private LeftButton mLeftButton;
+    private RightButton mRightButton;
     private BackRightButton mBackRightButton;
 
     private Array<Rocket> mRockets;
@@ -116,7 +118,22 @@ public class GameScreen extends ScreenAdapter {
             }
         };
 
-        mHelpBG = new HelpBG(mViewport, atlas);
+        mHelpPrompts = new Array<BasicHelpPrompt>(6);
+        for (int i = 0; i < 6; ++i) {
+            mHelpPrompts.add(new BasicHelpPrompt(atlas.findRegion("helpPrompt", i + 1), mViewport));
+        }
+        mLeftButton = new LeftButton(mViewport, atlas) {
+            @Override
+            public void press() {
+                leftButtonPress();
+            }
+        };
+        mRightButton = new RightButton(mViewport, atlas) {
+            @Override
+            public void press() {
+                rightButtonPress();
+            }
+        };
         mBackRightButton = new BackRightButton(mViewport, atlas) {
             @Override
             public void press() {
@@ -215,10 +232,16 @@ public class GameScreen extends ScreenAdapter {
         mCreditsUI.addActor(mCreditsBG);
         mCreditsUI.addActor(mBackLeftButton);
 
-        mHelpBG.init();
+        for (int i = 0; i < 6; ++i) {
+            mHelpPrompts.get(i).init();
+            mHelpUI.addActor(mHelpPrompts.get(i));
+        }
+        mLeftButton.init();
+        mRightButton.init();
         mBackRightButton.init();
 
-        mHelpUI.addActor(mHelpBG);
+        mHelpUI.addActor(mLeftButton);
+        mHelpUI.addActor(mRightButton);
         mHelpUI.addActor(mBackRightButton);
 
         for (int i = 0; i < mStars.size; ++i) {
@@ -348,6 +371,8 @@ public class GameScreen extends ScreenAdapter {
         mBackRightButton.addAction(sequence(run(new Runnable() {
                     @Override
                     public void run() {
+                        mLeftButton.setTouchable(Touchable.disabled);
+                        mRightButton.setTouchable(Touchable.enabled);
                         mBackRightButton.setTouchable(Touchable.disabled);
                     }
                 }),
@@ -357,7 +382,12 @@ public class GameScreen extends ScreenAdapter {
                     @Override
                     public void run() {
                         mBackRightButton.addAction(fadeOut(0.35f));
-                        mHelpBG.addAction(fadeOut(0.35f));
+                        mLeftButton.addAction(fadeOut(0.35f));
+                        mRightButton.addAction(fadeOut(0.35f));
+                        for (int i = 0; i < 6; ++i) {
+                            mHelpPrompts.get(i).addAction(fadeOut(0.35f));
+                            mHelpPrompts.get(i).reset();
+                        }
                         Gdx.input.setInputProcessor(mTitleUI);
                         mTitleUI.addAction(fadeIn(0.35f));
                         mNormalButton.setTouchable(Touchable.enabled);
@@ -517,8 +547,12 @@ public class GameScreen extends ScreenAdapter {
                     @Override
                     public void run() {
                         Gdx.input.setInputProcessor(mHelpUI);
-                        mHelpBG.addAction(fadeIn(0.35f));
+                        mHelpPrompts.get(0).enter();
+                        mLeftButton.addAction(fadeIn(0.35f));
+                        mRightButton.addAction(fadeIn(0.35f));
                         mBackRightButton.addAction(fadeIn(0.35f));
+                        mLeftButton.setTouchable(Touchable.enabled);
+                        mRightButton.setTouchable(Touchable.enabled);
                         mBackRightButton.setTouchable(Touchable.enabled);
                     }
                 })));
@@ -555,6 +589,24 @@ public class GameScreen extends ScreenAdapter {
                         startHomeSequence();
                     }
                 }))));
+    }
+
+    private void leftButtonPress() {
+        mLeftButton.addAction(sequence(
+                moveBy(0, -10, 0.1f),
+                moveBy(0, 10, 0.1f),
+                run(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (int i = 0; i < 6; ++i) {
+                            if (mHelpPrompts.get(i).isActive() && i - 1 > -1 && mHelpPrompts.get(i - 1) != null) {
+                                mHelpPrompts.get(i).exitToRight();
+                                mHelpPrompts.get(i - 1).enter();
+                                break;
+                            }
+                        }
+                    }
+                })));
     }
 
     private void normalButtonPress() {
@@ -644,6 +696,27 @@ public class GameScreen extends ScreenAdapter {
                 mCheckAlienPositions = true;
             }
         }));
+    }
+
+    private void rightButtonPress() {
+        for (int i = 0; i < 6; ++i) {
+            Gdx.app.log("HelpPrompt " + i, "" + mHelpPrompts.get(i).isActive());
+        }
+        mRightButton.addAction(sequence(
+                moveBy(0, -10, 0.1f),
+                moveBy(0, 10, 0.1f),
+                run(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (int i = 0; i < 6; ++i) {
+                            if (mHelpPrompts.get(i).isActive() && i + 1 < 6 && mHelpPrompts.get(i + 1) != null) {
+                                mHelpPrompts.get(i).exitToLeft();
+                                mHelpPrompts.get(i + 1).enter();
+                                break;
+                            }
+                        }
+                    }
+                })));
     }
 
     private void startGameSequence() {
