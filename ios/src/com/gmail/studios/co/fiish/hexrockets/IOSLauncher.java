@@ -11,6 +11,8 @@ public class IOSLauncher extends IOSApplication.Delegate {
     @Override
     protected IOSApplication createApplication() {
         IOSApplicationConfiguration config = new IOSApplicationConfiguration();
+        config.useAccelerometer = false;
+        config.useCompass = false;
         return new IOSApplication(new HexRocketsGame(), config);
     }
 

@@ -13,11 +13,11 @@ public class LeftButton extends BasicButton {
 
     @Override
     public void init() {
-        mWidthDef = mViewport.getScreenWidth() * 0.25f;
+        mWidthDef = mViewport.getScreenWidth() * 0.2f;
         mHeightDef = mWidthDef / mRegion.getRegionWidth() * mRegion.getRegionHeight();
 
         mXDef = mViewport.getScreenWidth() / 2f - mWidthDef - 20;
-        mYDef = mViewport.getScreenHeight() * 0.26f;
+        mYDef = mViewport.getScreenHeight() / 2f - (mViewport.getScreenWidth() * 0.925f * 700 / 675 / 3) - mHeightDef - 25;
 
         mTouchableDef = Touchable.disabled;
 

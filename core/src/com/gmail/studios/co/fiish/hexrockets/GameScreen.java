@@ -699,9 +699,6 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private void rightButtonPress() {
-        for (int i = 0; i < 6; ++i) {
-            Gdx.app.log("HelpPrompt " + i, "" + mHelpPrompts.get(i).isActive());
-        }
         mRightButton.addAction(sequence(
                 moveBy(0, -10, 0.1f),
                 moveBy(0, 10, 0.1f),
