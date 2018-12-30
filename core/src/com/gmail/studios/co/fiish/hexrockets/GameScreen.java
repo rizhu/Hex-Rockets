@@ -691,7 +691,7 @@ public class GameScreen extends ScreenAdapter {
                 if (mHardMode) {
                     resetAlienPosition(15);
                 } else {
-                    resetAlienPosition(4);
+                    resetAlienPosition(10);
                 }
                 mCheckAlienPositions = true;
             }
@@ -734,7 +734,7 @@ public class GameScreen extends ScreenAdapter {
                     sendAliensForward(15);
                 } else {
                     setUpProblem(15);
-                    sendAliensForward(4);
+                    sendAliensForward(10);
                 }
             }
         })));
