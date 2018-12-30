@@ -163,7 +163,7 @@ public class GameScreen extends ScreenAdapter {
                     } else {
                         setUpProblem(15);
                         for (int i = 0; i < 4; i++) {
-                            resetAlienPosition(11f / (mScore + 3.6666f) + 1);
+                            resetAlienPosition(15f / (mScore + 1.714f) + 1.25f);
                         }
                     }
                 }
