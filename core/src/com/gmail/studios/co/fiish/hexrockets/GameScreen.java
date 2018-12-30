@@ -145,7 +145,7 @@ public class GameScreen extends ScreenAdapter {
         mAliens = new Array<Alien>(4);
         mStars = new Array<Star>();
 
-        for (int i = 0; i < MathUtils.random(8, 15); ++i) {
+        for (int i = 0; i < MathUtils.random(8, 15); ++i) {     //Generates 8-15 stars in random positions in the background
             mStars.add(new Star(mViewport, atlas));
         }
 
@@ -156,14 +156,14 @@ public class GameScreen extends ScreenAdapter {
                     ++mScore;
                     mCorrect.play(1.0f);
                     if (mHardMode) {
-                        setUpProblem(255);
+                        setUpProblem(255);  //Hard Mode generates two terms for the problem between 0 and FF
                         for (int i = 0; i < 4; i++) {
-                            resetAlienPosition(30f / (mScore + 3f) + 5);
+                            resetAlienPosition(30f / (mScore + 3f) + 5);    //The time limit for the 1st question in Hard Mode is 15 seconds and it steadily drops off, approaching 5 seconds
                         }
                     } else {
-                        setUpProblem(15);
+                        setUpProblem(15);   //Normal Mode generates two terms for the problem between 0 and F
                         for (int i = 0; i < 4; i++) {
-                            resetAlienPosition(15f / (mScore + 1.714f) + 1.25f);
+                            resetAlienPosition(15f / (mScore + 1.714f) + 1.25f);    //The time limit for the 1st question in Normal Mode is 10 seconds and it steadily drops off, approaching 1.25 seconds
                         }
                     }
                 }
@@ -202,13 +202,13 @@ public class GameScreen extends ScreenAdapter {
         mHighScore = manager.get("highScore.wav", Sound.class);
         mStart = manager.get("start.wav", Sound.class);
 
-        FreeTypeFontGenerator.setMaxTextureSize(4096);
+        FreeTypeFontGenerator.setMaxTextureSize(4096);  //Allows for larger font size
     }
 
     @Override
     public void show() {
         Gdx.gl.glClearColor(0, 0, 0, 1);
-    }
+    }   //Clears screen to black every frame
 
     @Override
     public void resize(int width, int height) {
@@ -266,15 +266,15 @@ public class GameScreen extends ScreenAdapter {
         mGameOverUI.addActor(mHomeButton);
         mGameOverUI.addActor(mReplayButton);
 
-        mProblemParam.size = (int) (0.075f * mViewport.getScreenHeight());
+        mProblemParam.size = (int) (0.075f * mViewport.getScreenHeight());  //Sets up font for problem
         mProblemParam.color = Color.WHITE;
         mProblemFont = mGenerator.generateFont(mProblemParam);
 
-        mAnswerParam.size = (int) (0.06f * mViewport.getScreenHeight());
+        mAnswerParam.size = (int) (0.06f * mViewport.getScreenHeight());    //Sets up font for answer choices
         mAnswerParam.color = Color.WHITE;
         mAnswerFont = mGenerator.generateFont(mAnswerParam);
 
-        mScoreParam.size = (int) (0.04f * mViewport.getScreenHeight());
+        mScoreParam.size = (int) (0.04f * mViewport.getScreenHeight());     //Sets up font for score
         mScoreParam.color = new Color(0.224f, 1f, .078f, 1);
         mScoreFont = mGenerator.generateFont(mScoreParam);
 
@@ -343,18 +343,18 @@ public class GameScreen extends ScreenAdapter {
         mStart.dispose();
     }
 
-    private void backLeftButtonPress() {
+    private void backLeftButtonPress() {    //Actions to be executed when backLeftButton is pressed
         mBackLeftButton.addAction(sequence(run(new Runnable() {
                     @Override
                     public void run() {
-                        mBackLeftButton.setTouchable(Touchable.disabled);
+                        mBackLeftButton.setTouchable(Touchable.disabled);   //Stops spam of button
                     }
                 }),
-                moveBy(0, -10, 0.1f),
+                moveBy(0, -10, 0.1f),   //Animation of button moving down and up
                 moveBy(0, 10, 0.1f),
                 run(new Runnable() {
                     @Override
-                    public void run() {
+                    public void run() {     //Closes Credits UI and sets up Title UI
                         mBackLeftButton.addAction(fadeOut(0.35f));
                         mCreditsBG.addAction(fadeOut(0.35f));
                         Gdx.input.setInputProcessor(mTitleUI);
@@ -367,20 +367,20 @@ public class GameScreen extends ScreenAdapter {
                 })));
     }
 
-    private void backRightButtonPress() {
+    private void backRightButtonPress() {   //Actions to be executed when backRightButton is pressed
         mBackRightButton.addAction(sequence(run(new Runnable() {
                     @Override
-                    public void run() {
+                    public void run() {     //Stops spam of buttons on Help UI
                         mLeftButton.setTouchable(Touchable.disabled);
                         mRightButton.setTouchable(Touchable.enabled);
                         mBackRightButton.setTouchable(Touchable.disabled);
                     }
                 }),
-                moveBy(0, -10, 0.1f),
+                moveBy(0, -10, 0.1f),   //Animation of button moving down and up
                 moveBy(0, 10, 0.1f),
                 run(new Runnable() {
                     @Override
-                    public void run() {
+                    public void run() {     //Closes Help UI and sets up Title UI
                         mBackRightButton.addAction(fadeOut(0.35f));
                         mLeftButton.addAction(fadeOut(0.35f));
                         mRightButton.addAction(fadeOut(0.35f));
@@ -398,30 +398,30 @@ public class GameScreen extends ScreenAdapter {
                 })));
     }
 
-    private void checkAlienPosition() {
+    private void checkAlienPosition() {     //Checks position of Aliens in order to check if the Aliens have reached the Rockets
         if (mAliens.get(0).getY() >= mRockets.get(0).getY() + mRockets.get(0).getHeight() * (20f / 52f) - mAliens.get(0).getHeight()) {
             mCheckAlienPositions = false;
             gameOverSequence();
         }
     }
 
-    private void creditsButtonPress() {
+    private void creditsButtonPress() {     //Actions to be executed when creditsButton is pressed
         mCreditsButton.addAction(sequence(run(new Runnable() {
                     @Override
-                    public void run() {
+                    public void run() {     //Stops spam of other buttons on Title UI
                         mNormalButton.setTouchable(Touchable.disabled);
                         mHardButton.setTouchable(Touchable.disabled);
                         mCreditsButton.setTouchable(Touchable.disabled);
                         mHelpButton.setTouchable(Touchable.disabled);
                     }
                 }),
-                moveBy(0, -10, 0.1f),
+                moveBy(0, -10, 0.1f),   //Animation of button moving up and down
                 moveBy(0, 10, 0.1f)
         ));
         mTitleUI.addAction(sequence(fadeOut(0.35f),
                 run(new Runnable() {
                     @Override
-                    public void run() {
+                    public void run() {     //Sets up Credits UI
                         Gdx.input.setInputProcessor(mCreditsUI);
                         mCreditsBG.addAction(fadeIn(0.35f));
                         mBackLeftButton.addAction(fadeIn(0.35f));
@@ -447,16 +447,16 @@ public class GameScreen extends ScreenAdapter {
         mScoreFont.draw(mBatch, mLayout, mViewport.getScreenWidth() / 2f - mLayout.width / 2f, mViewport.getScreenHeight() * 0.26f);
     }
 
-    private void gameOverSequence() {
+    private void gameOverSequence() {   //Actions to be executed when player loses
         mDeath.play(1.0f);
-        if (mHardMode) {
+        if (mHardMode) {     //Saves high score for Hard Mode
             if (mScore > mData.getInteger("hardHigh", 0)) {
                 mData.putInteger("hardHigh", mScore);
                 mData.flush();
                 mHighScore.play(1.0f);
             }
             mScoreBG.sendData(mScore, mData.getInteger("hardHigh", 0), mHardMode);
-        } else {
+        } else {     //Saves high score for Normal Mode
             if (mScore > mData.getInteger("normalHigh", 0)) {
                 mData.putInteger("normalHigh", mScore);
                 mData.flush();
@@ -465,7 +465,7 @@ public class GameScreen extends ScreenAdapter {
             mScoreBG.sendData(mScore, mData.getInteger("normalHigh", 0), mHardMode);
         }
 
-        for (int i = 0; i < 4; ++i) {
+        for (int i = 0; i < 4; ++i) {   //Removes Rockets and Aliens
             mRockets.get(i).setTouchable(Touchable.disabled);
             mAliens.get(i).clearActions();
             mRockets.get(i).addAction(fadeOut(0.25f));
@@ -481,17 +481,17 @@ public class GameScreen extends ScreenAdapter {
 
         mGameOverLogo.addAction(delay(0.3f, run(new Runnable() {
             @Override
-            public void run() {
+            public void run() {     //Game Over Logo setup
                 mGameOverLogo.addAction(moveTo(mViewport.getScreenWidth() / 2 - mGameOverLogo.getWidth() / 2, mViewport.getScreenHeight() * 0.4f + 1.03f * mScoreBG.getHeight(), 0.35f));
                 mGameOverLogo.addAction(fadeIn(0.35f));
             }
         })));
 
-        mScoreBG.addAction(delay(0.3f, moveTo(mScoreBG.getX(), mViewport.getScreenHeight() * 0.4f, 0.35f)));
+        mScoreBG.addAction(delay(0.3f, moveTo(mScoreBG.getX(), mViewport.getScreenHeight() * 0.4f, 0.35f)));    //Score menu setup
 
         mHomeButton.addAction(delay(0.3f, run(new Runnable() {
             @Override
-            public void run() {
+            public void run() {     //Home Button setup
                 mHomeButton.setTouchable(Touchable.enabled);
                 mHomeButton.addAction(moveTo(mViewport.getScreenWidth() / 8f, mViewport.getScreenHeight() * 0.4f - 1.1f * mHomeButton.getHeight(), 0.35f));
                 mHomeButton.addAction(fadeIn(0.35f));
@@ -500,7 +500,7 @@ public class GameScreen extends ScreenAdapter {
 
         mReplayButton.addAction(delay(0.3f, run(new Runnable() {
             @Override
-                public void run() {
+                public void run() {     //Replay Button setup
                     mReplayButton.setTouchable(Touchable.enabled);
                     mReplayButton.addAction(moveTo(mViewport.getScreenWidth() / 8f * 7f - mReplayButton.getWidth(), mViewport.getScreenHeight() * 0.4f - 1.1f * mReplayButton.getHeight(), 0.35f));
                     mReplayButton.addAction(fadeIn(0.35f));
@@ -508,17 +508,17 @@ public class GameScreen extends ScreenAdapter {
         })));
     }
 
-    private void hardButtonPress() {
+    private void hardButtonPress() {    //Actions executed when hardButton is pressed
         mHardButton.addAction(sequence(run(new Runnable() {
                     @Override
-                    public void run() {
+                    public void run() {     //Spam control
                         mNormalButton.setTouchable(Touchable.disabled);
                         mHardButton.setTouchable(Touchable.disabled);
                         mCreditsButton.setTouchable(Touchable.disabled);
                         mHelpButton.setTouchable(Touchable.disabled);
                     }
                 }),
-                moveBy(0, -10, 0.1f),
+                moveBy(0, -10, 0.1f),   //Press animation
                 moveBy(0, 10, 0.1f),
                 run(new Runnable() {
                     @Override
@@ -529,23 +529,23 @@ public class GameScreen extends ScreenAdapter {
         mStart.play(1.0f);
     }
 
-    private void helpButtonPress() {
+    private void helpButtonPress() {    //Actions executed when helpButton is pressed
         mHelpButton.addAction(sequence(run(new Runnable() {
                     @Override
-                    public void run() {
+                    public void run() {     //Spam control
                         mNormalButton.setTouchable(Touchable.disabled);
                         mHardButton.setTouchable(Touchable.disabled);
                         mCreditsButton.setTouchable(Touchable.disabled);
                         mHelpButton.setTouchable(Touchable.disabled);
                     }
                 }),
-                moveBy(0, -10, 0.1f),
+                moveBy(0, -10, 0.1f),   //Spam control
                 moveBy(0, 10, 0.1f)
                 ));
         mTitleUI.addAction(sequence(fadeOut(0.35f),
                 run(new Runnable() {
                     @Override
-                    public void run() {
+                    public void run() {     //Help UI setup
                         Gdx.input.setInputProcessor(mHelpUI);
                         mHelpPrompts.get(0).enter();
                         mLeftButton.addAction(fadeIn(0.35f));
@@ -558,19 +558,19 @@ public class GameScreen extends ScreenAdapter {
                 })));
     }
 
-    private void homeButtonPress() {
+    private void homeButtonPress() {    //Actions executed when homeButton is pressed
         mHomeButton.addAction(sequence(run(new Runnable() {
                     @Override
-                    public void run() {
+                    public void run() {     //Spam control
                         mHomeButton.setTouchable(Touchable.disabled);
                         mReplayButton.setTouchable(Touchable.disabled);
                     }
                 }),
-                moveBy(0, -10, 0.1f),
+                moveBy(0, -10, 0.1f),   //Press animation
                 moveBy(0, 10, 0.1f),
                 run(new Runnable() {
                     @Override
-                    public void run() {
+                    public void run() {     //Title UI setup
                         mGameOverLogo.addAction(moveTo(mViewport.getScreenWidth() / 2 - mGameOverLogo.getWidth() / 2, mViewport.getScreenHeight() * 0.75f, 0.35f));
                         mGameOverLogo.addAction(fadeOut(0.35f));
 
@@ -591,13 +591,13 @@ public class GameScreen extends ScreenAdapter {
                 }))));
     }
 
-    private void leftButtonPress() {
+    private void leftButtonPress() {    //Actions executed when leftButton is pressed
         mLeftButton.addAction(sequence(
-                moveBy(0, -10, 0.1f),
+                moveBy(0, -10, 0.1f),   //Press animation
                 moveBy(0, 10, 0.1f),
                 run(new Runnable() {
                     @Override
-                    public void run() {
+                    public void run() {     //Help menu goes to previous slide
                         for (int i = 0; i < 6; ++i) {
                             if (mHelpPrompts.get(i).isActive() && i - 1 > -1 && mHelpPrompts.get(i - 1) != null) {
                                 mHelpPrompts.get(i).exitToRight();
@@ -609,17 +609,17 @@ public class GameScreen extends ScreenAdapter {
                 })));
     }
 
-    private void normalButtonPress() {
+    private void normalButtonPress() {      //Actions executed when normalButton is pressed
         mNormalButton.addAction(sequence(run(new Runnable() {
                     @Override
-                    public void run() {
+                    public void run() {     //Spam control
                         mNormalButton.setTouchable(Touchable.disabled);
                         mHardButton.setTouchable(Touchable.disabled);
                         mCreditsButton.setTouchable(Touchable.disabled);
                         mHelpButton.setTouchable(Touchable.disabled);
                     }
                 }),
-                moveBy(0, -10, 0.1f),
+                moveBy(0, -10, 0.1f),   //Press animation
                 moveBy(0, 10, 0.1f),
                 run(new Runnable() {
                     @Override
@@ -630,7 +630,7 @@ public class GameScreen extends ScreenAdapter {
         mStart.play(1.0f);
     }
 
-    private void resetAlienPosition(float nextDuration) {
+    private void resetAlienPosition(float nextDuration) {   //Resets the position of the Aliens and sets the time limit of the next problem
         for (int i = 0; i < 4; i++) {
             mAliens.get(i).clearActions();
             mAliens.get(i).addAction(fadeIn(0.25f));
@@ -640,19 +640,19 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
-    private void replayButtonPress() {
+    private void replayButtonPress() {      //Actions executed when replayButton is pressed
         mReplayButton.addAction(sequence(run(new Runnable() {
                     @Override
-                    public void run() {
+                    public void run() {     //Spam control
                         mHomeButton.setTouchable(Touchable.disabled);
                         mReplayButton.setTouchable(Touchable.disabled);
                     }
                 }),
-                moveBy(0, -10, 0.1f),
+                moveBy(0, -10, 0.1f),   //Press animation
                 moveBy(0, 10, 0.1f),
                 run(new Runnable() {
                     @Override
-                    public void run() {
+                    public void run() {     //New game set up
                         mGameOverLogo.addAction(moveTo(mViewport.getScreenWidth() / 2 - mGameOverLogo.getWidth() / 2, mViewport.getScreenHeight() * 0.75f, 0.35f));
                         mGameOverLogo.addAction(fadeOut(0.35f));
 
@@ -674,7 +674,7 @@ public class GameScreen extends ScreenAdapter {
                 }))));
     }
 
-    private void resetGameSequence() {
+    private void resetGameSequence() {      //Resets game
         if (mHardMode) {
             setUpProblem(255);
         } else {
@@ -698,13 +698,13 @@ public class GameScreen extends ScreenAdapter {
         }));
     }
 
-    private void rightButtonPress() {
+    private void rightButtonPress() {   //Actions executed when rightButton is pressed
         mRightButton.addAction(sequence(
-                moveBy(0, -10, 0.1f),
+                moveBy(0, -10, 0.1f),   //Press animation
                 moveBy(0, 10, 0.1f),
                 run(new Runnable() {
                     @Override
-                    public void run() {
+                    public void run() {     //Advances Help menu slide
                         for (int i = 0; i < 6; ++i) {
                             if (mHelpPrompts.get(i).isActive() && i + 1 < 6 && mHelpPrompts.get(i + 1) != null) {
                                 mHelpPrompts.get(i).exitToLeft();
@@ -716,14 +716,14 @@ public class GameScreen extends ScreenAdapter {
                 })));
     }
 
-    private void startGameSequence() {
-        mLogo.addAction(fadeOut(0.35f));
+    private void startGameSequence() {      //Starts game
+        mLogo.addAction(fadeOut(0.35f));    //Title UI removal
         mHardButton.addAction(fadeOut(0.35f));
         mCreditsButton.addAction(fadeOut(0.35f));
         mHelpButton.addAction(fadeOut(0.35f));
         mNormalButton.addAction(sequence(fadeOut(0.35f), run(new Runnable() {
             @Override
-            public void run() {
+            public void run() {     //Game setup
                 Gdx.input.setInputProcessor(mMainStage);
                 for (int i = 0; i < 4; ++i) {
                     mRockets.get(i).addAction(fadeIn(0.35f));
@@ -740,7 +740,7 @@ public class GameScreen extends ScreenAdapter {
         })));
     }
 
-    private void startHomeSequence() {
+    private void startHomeSequence() {      //Actions to be executed for Home menu setup
         mScore = 0;
         Gdx.input.setInputProcessor(mTitleUI);
         mLogo.reset();
@@ -755,14 +755,14 @@ public class GameScreen extends ScreenAdapter {
         mCheckAlienPositions = true;
     }
 
-    private void sendAliensForward(float duration) {
+    private void sendAliensForward(float duration) {    //Sends Aliens forward for first problem in a game sequence
         for (int i = 0; i < 4; i++) {
             mAliens.get(i).addAction(moveTo(mAliens.get(i).getX(),
                     mRockets.get(i).getY() + mRockets.get(i).getHeight() * (20f / 52f) - mAliens.get(i).getHeight(), duration));
         }
     }
 
-    private void setUpProblem(int bound) {
+    private void setUpProblem(int bound) {      //Sets up problem
         mProblem.generateProblem(bound);
 
         mAnswerSet.generateAnswers(mProblem.getSolution(), bound, 32);
