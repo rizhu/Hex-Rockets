@@ -10,3 +10,5 @@ Programmed by Richard Hu. Audio by James Yang. Sprites and art by both.
 [Google Play Store](https://play.google.com/store/apps/details?id=com.gmail.studios.co.fiish.hexrockets)
 
 Implementation code located at [/core/src/com/gmail/studios/co/fiish/hexrockets](/core/src/com/gmail/studios/co/fiish/hexrockets)
+
+Assets located at [/android/assets](/android/assets)
