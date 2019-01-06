@@ -161,7 +161,7 @@ public class GameScreen extends ScreenAdapter {
                 @Override
                 public void newProblem() {
                     ++mScore;
-                    mCorrect.play(1.0f);
+                    mCorrect.play(mData.getFloat("volume", 1.0f));
                     if (mHardMode) {
                         setUpProblem(255);  //Hard Mode generates two terms for the problem between 0 and FF
                         for (int i = 0; i < 4; i++) {
@@ -460,19 +460,19 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private void gameOverSequence() {   //Actions to be executed when player loses
-        mDeath.play(1.0f);
+        mDeath.play(mData.getFloat("volume", 1.0f));
         if (mHardMode) {     //Saves high score for Hard Mode
             if (mScore > mData.getInteger("hardHigh", 0)) {
                 mData.putInteger("hardHigh", mScore);
                 mData.flush();
-                mHighScore.play(1.0f);
+                mHighScore.play(mData.getFloat("volume", 1.0f));
             }
             mScoreBG.sendData(mScore, mData.getInteger("hardHigh", 0), mHardMode);
         } else {     //Saves high score for Normal Mode
             if (mScore > mData.getInteger("normalHigh", 0)) {
                 mData.putInteger("normalHigh", mScore);
                 mData.flush();
-                mHighScore.play(1.0f);
+                mHighScore.play(mData.getFloat("volume", 1.0f));
             }
             mScoreBG.sendData(mScore, mData.getInteger("normalHigh", 0), mHardMode);
         }
@@ -539,7 +539,7 @@ public class GameScreen extends ScreenAdapter {
                         startGameSequence();
                     }
                 })));
-        mStart.play(1.0f);
+        mStart.play(mData.getFloat("volume", 1.0f));
     }
 
     private void helpButtonPress() {    //Actions executed when helpButton is pressed
@@ -642,7 +642,7 @@ public class GameScreen extends ScreenAdapter {
                         startGameSequence();
                     }
                 })));
-        mStart.play(1.0f);
+        mStart.play(mData.getFloat("volume", 1.0f));
     }
 
     private void resetAlienPosition(float nextDuration) {   //Resets the position of the Aliens and sets the time limit of the next problem
@@ -738,7 +738,16 @@ public class GameScreen extends ScreenAdapter {
                 run(new Runnable() {
                     @Override
                     public void run() {
-
+                        if (mData.getBoolean("soundOn", true)) {
+                            mSoundButton.setOff();
+                            mData.putBoolean("soundOn", false);
+                            mData.putFloat("volume", 0f);
+                        } else {
+                            mSoundButton.setOn();
+                            mData.putBoolean("soundOn", true);
+                            mData.putFloat("volume", 1f);
+                        }
+                        mData.flush();
                     }
                 })));
     }

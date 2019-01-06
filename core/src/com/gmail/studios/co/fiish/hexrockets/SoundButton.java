@@ -38,4 +38,12 @@ public class SoundButton extends BasicButton {
     public void press() {
 
     }
+
+    public void setOn() {
+        mRegion = mSoundOn;
+    }
+
+    public void setOff() {
+        mRegion = mSoundOff;
+    }
 }

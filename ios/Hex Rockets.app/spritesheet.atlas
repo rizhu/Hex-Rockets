@@ -34,7 +34,7 @@ alienOrange
   index: 2
 alienPink
   rotate: false
-  xy: 126, 301
+  xy: 126, 233
   size: 23, 15
   orig: 23, 15
   offset: 0, 0
@@ -620,6 +620,20 @@ silver
   orig: 63, 61
   offset: 0, 0
   index: 11
+soundoff
+  rotate: false
+  xy: 126, 284
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+soundon
+  rotate: false
+  xy: 126, 250
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
 star
   rotate: false
   xy: 2033, 2039
