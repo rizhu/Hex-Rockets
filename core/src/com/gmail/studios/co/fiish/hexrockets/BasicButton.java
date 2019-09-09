@@ -52,6 +52,7 @@ public abstract class BasicButton extends Actor {
     }
 
     public abstract void press();
+
     @Override
     public void draw(Batch batch, float alpha) {
         batch.setColor(getColor().r, getColor().g, getColor().b, getColor().a * alpha);
